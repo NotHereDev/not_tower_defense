@@ -1,0 +1,10 @@
+#!/bin/bash
+
+MINECRAFT_VERSION=${1:-1.12.2}
+
+curl -z BuildTools.jar -o BuildTools.jar https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
+
+mkdir -p test_server/{$MINECRAFT_VERSION,build_tools}
+cd test_server/build_tools || exit 1
+
+java -jar ../../BuildTools.jar --compile-if-changed --rev "$MINECRAFT_VERSION" --output-dir "../$MINECRAFT_VERSION/"
