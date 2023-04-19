@@ -1,5 +1,6 @@
 package fr.not_here.not_tower_defense.listeners
 
+import fr.not_here.not_tower_defense.managers.GameManager
 import org.bukkit.Material
 import org.bukkit.block.BlockFace
 import org.bukkit.entity.LivingEntity
@@ -10,6 +11,7 @@ import org.bukkit.event.entity.EntityCombustEvent
 class EntityCombustListener : Listener {
   @EventHandler
   fun onEntityCombust(event: EntityCombustEvent) {
+    if(!GameManager.isWaveEntity(event.entity) && !GameManager.isTowerEntity(event.entity)) return
     val entity = event.entity
     if(
       entity is LivingEntity

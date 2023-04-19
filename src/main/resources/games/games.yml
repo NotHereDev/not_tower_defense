@@ -1,0 +1,197 @@
+games:
+  - name: game
+    displayName: '§6Game'
+    waitingRoom:
+      from:
+        x: -241
+        y: 92
+        z: 142
+      to:
+        x: -243
+        y: 93
+        z: 144
+    #facultative value, if not set, position will be set to the center bottom of the room
+    waitingRoomSpawn:
+      x: -242
+      y: 92
+      z: 143
+    gameRoom:
+      from:
+        x: -244
+        y: 91
+        z: 141
+      to:
+        x: -185
+        y: 94
+        z: 180
+    #facultative value, if not set, position will be set to the center bottom of the room
+    gameRoomSpawn:
+      x: -244
+      y: 91
+      z: 141
+    startRoom:
+      from:
+        x: -229
+        y: 92
+        z: 176
+      to:
+        x: -231
+        y: 93
+        z: 178
+    endRoom:
+      from:
+        x: -241
+        y: 92
+        z: 142
+      to:
+        x: -243
+        y: 93
+        z: 144
+    pathSteps:
+      - from:
+          x: -208
+          y: 92
+          z: 178
+        to:
+          x: -210
+          y: 92
+          z: 180
+      - from:
+          x: -188
+          y: 92
+          z: 165
+        to:
+          x: -190
+          y: 92
+          z: 167
+      - from:
+          x: -226
+          y: 92
+          z: 160
+        to:
+          x: -228
+          y: 92
+          z: 162
+      - from:
+          x: -210
+          y: 92
+          z: 151
+        to:
+          x: -212
+          y: 92
+          z: 153
+      - from:
+          x: -219
+          y: 92
+          z: 142
+        to:
+          x: -221
+          y: 92
+          z: 144
+    towers:
+      - name: ray_tower
+        displayName: '§6Ray Tower'
+        entityType: SKELETON
+        startLevel: 0
+        levelCosts:
+          - 500
+          - 1500
+          - 3000
+        levelRanges:
+          - 6
+          - 8
+          - 10
+        levelDamages:
+          - 1
+          - 2
+          - 4
+        levelShotCooldowns:
+          - 10
+          - 8
+          - 6
+        towerModifiers:
+          - name: ray_destroyer
+            displayName: '§6Ray Destroyer'
+            entityType: SKELETON
+            startLevel: 0
+            levelCosts:
+              - 3000
+              - 8000
+              - 15000
+            levelRanges:
+              - 10
+              - 12
+              - 16
+            levelDamages:
+              - 20
+              - 30
+              - 45
+            levelShotCooldowns:
+              - 100
+              - 80
+              - 60
+          - name: ray_gatling
+            displayName: '§6Ray Gatling'
+            entityType: SKELETON
+            startLevel: 0
+            levelCosts:
+              - 3000
+              - 6000
+              - 9000
+            levelRanges:
+              - 10
+              - 12
+              - 14
+            levelDamages:
+              - 2
+              - 4
+              - 8
+            levelShotCooldowns:
+              - 6
+              - 4
+              - 2
+    towerOnBlockType: GOLD_BLOCK
+    mobs:
+      - name: zombie
+        displayName: '§6Zombie'
+        entityType: ZOMBIE
+        health: 10
+        damage: 1
+        speed: 0.2
+        reward: 10
+      - name: skeleton
+        displayName: '§6Skeleton'
+        entityType: SKELETON
+        health: 20
+        damage: 2
+        speed: 0.3
+        reward: 20
+      - name: creeper
+        displayName: '§6Creeper'
+        entityType: CREEPER
+        health: 30
+        damage: 3
+        speed: 0.4
+        reward: 30
+    waveChangeTimeout: 100
+    waves:
+      - endReward: 100
+        steps:
+          - mobName: zombie
+            amount: 10
+            cooldown: 5
+            timeout: 50
+            strengthMultiplier: 1
+            spawnWithPrevious: false
+          - mobName: skeleton
+            amount: 50
+            cooldown: 2
+            timeout: 50
+            strengthMultiplier: 0.5
+            spawnWithPrevious: true
+          - mobName: creeper
+            amount: 10
+            cooldown: 5
+            timeout: 50
+            strengthMultiplier: 2
+            spawnWithPrevious: false

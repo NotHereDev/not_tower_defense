@@ -1,0 +1,2 @@
+#value displayed on entity name tags, colors prefices with "§", valid variables are {mobName}, {health} and {maxHealth}
+waveEntityNamePattern: "{mobName} §r§8[§3{health}§f/§3{maxHealth}§8]"

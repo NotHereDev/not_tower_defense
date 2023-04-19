@@ -1,98 +1,87 @@
 package fr.not_here.not_tower_defense.classes
 
 import fr.not_here.not_tower_defense.NotTowerDefense
+import fr.not_here.not_tower_defense.config.models.GameConfig
+import fr.not_here.not_tower_defense.managers.GameManager
 import org.bukkit.Bukkit
 import org.bukkit.Material
+import org.bukkit.World
 import org.bukkit.entity.Entity
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitTask
-import org.bukkit.util.Vector
 
 data class Game(
-  val waitingRoom: Zone,
-  val gameZone: Zone,
+  val gameConfig: GameConfig,
   val players: List<Player>,
-  val spawnRoom: Zone,
-  val endRoom: Zone,
-  val pathStepZones: List<Zone>,
-  val waves: List<List<GameWaveStep>>,
-  val waveChangeTimeout: Int = 100,
   val towerOnBlockType: Material = Material.GOLD_BLOCK,
+  val world: World = Bukkit.getWorld("world")!!,
 ){
-  private var lastSpawnTicksElapsed: Long = 0
   private var lastWaveEndTicksElapsed: Long = 0
   private var currentWaveIndex: Int = 0
-  val mobs = mutableListOf<GameEntity>()
-  val towers = mutableListOf<GameTower>()
+  private val waves: List<GameWave> = gameConfig.waves.map { GameWave(it) }
+  private val waveEntities = mutableListOf<GameWaveEntity>()
+  private val spawnedTowers = mutableListOf<GameTower>()
   lateinit var loop: BukkitTask
 
   fun broadcast(message: String) {
     Bukkit.getOnlinePlayers().forEach { player -> player.sendMessage(message) }
   }
 
-  private val isCurrentWaveEnded: Boolean
-    get() = waves.getOrNull(currentWaveIndex)?.all { it.allSpawned } == true && mobs.isEmpty()
+  fun hasEntityInTowers(entity: Entity) = spawnedTowers.any { it.entity == entity }
+  fun hasEntityInWaves(entity: Entity) = waveEntities.any { it.entity == entity }
+  fun getTowerFromEntity(entity: Entity) = spawnedTowers.find { it.entity == entity }
+  fun getWaveEntityFromEntity(entity: Entity) = waveEntities.find { it.entity == entity }
 
-  private val isGameEnded: Boolean
-    get() = isCurrentWaveEnded && currentWaveIndex + 1 >= waves.size
-
-  private val currentWave: List<GameWaveStep>
-    get() = waves[currentWaveIndex]
+  private val waveChangeTimeout get() = gameConfig.waveChangeTimeout
+  private val isCurrentWaveEnded get() = waves.getOrNull(currentWaveIndex)?.allSpawned == true && waveEntities.isEmpty()
+  private val isGameEnded get() = isCurrentWaveEnded && currentWaveIndex + 1 >= waves.size
+  private val currentWave get() = waves[currentWaveIndex]
 
   private fun summonNextMob(){
     if(isCurrentWaveEnded) {
-      lastWaveEndTicksElapsed++;
+      lastWaveEndTicksElapsed++
       if(lastWaveEndTicksElapsed > waveChangeTimeout) {
         currentWaveIndex++
         lastWaveEndTicksElapsed = 0
       }
       return
     }
-    for (step in currentWave) {
-      if(!step.timeoutPassed){
-        if (step.timeout < lastSpawnTicksElapsed) step.timeoutPassed = true else break
-      }
-      if(step.delay < lastSpawnTicksElapsed) {
-        mobs += step.spawnNextMob(spawnRoom, pathStepZones[0], Bukkit.getWorld("world")!!) ?: continue
-        lastSpawnTicksElapsed = 0
-        break
-      }
-    }
-    lastSpawnTicksElapsed++
+    waveEntities.addAll(currentWave.spawnNextMob(this, gameConfig.startRoom, gameConfig.pathSteps[0]))
   }
 
   private fun moveMobs(){
-    for (mob in mobs) {
-      val aimedZone = if(mob.step < pathStepZones.size) pathStepZones[mob.step] else endRoom
-      mob.move(aimedZone, mob.step >= pathStepZones.size)
+    for (mob in waveEntities) {
+      val aimedZone = if(mob.step < gameConfig.pathSteps.size) gameConfig.pathSteps[mob.step] else gameConfig.endRoom
+      mob.move(aimedZone, mob.step >= gameConfig.pathSteps.size)
     }
   }
 
   fun spawnOrGetTower(position: Position): GameTower {
-    towers.removeIf { tower -> tower.entity.isDead || !tower.entity.isValid }
-    var tower = towers.find { it.position == position }
+    spawnedTowers.removeIf { tower -> tower.entity.isDead || !tower.entity.isValid }
+    var tower = spawnedTowers.find { it.position == position }
     if(tower != null) return tower
-    tower = GameTower(position, Bukkit.getWorld("world")!!, 0, GameTowerData("Tower", EntityType.SKELETON, 10, 5.0, 10, 10, 0, listOf(10), listOf()))
-    towers.add(tower)
+    tower = GameTower(gameConfig.towers[0], position, world, 0)
+    spawnedTowers.add(tower)
     return tower
   }
 
   fun shotMobs(){
-    for (tower in towers) {
-      tower.shotNearestEntity(mobs.map { it.entity })
+    for (tower in spawnedTowers) {
+      tower.shotNearestEntity(waveEntities.map { it.entity })
     }
   }
 
   fun run() : BukkitTask {
     if(!::loop.isInitialized || loop.isCancelled) {
       broadcast("starting internal game loop")
-      Bukkit.getWorld("world")?.entities?.filter { it !is Player }?.filter { gameZone.contains(Position.fromLocation(it.location)) }?.forEach { it.remove() }
+      world.entities?.filter { it !is Player }?.filter { gameConfig.gameRoom.contains(Position.fromLocation(it.location)) }?.forEach { it.remove() }
       loop = Bukkit.getScheduler().runTaskTimer(NotTowerDefense.instance, {
-        mobs.removeIf() { mob -> mob.entity.isDead || !mob.entity.isValid }
+        waveEntities.removeIf() { mob -> mob.entity.isDead || !mob.entity.isValid }
         if(isGameEnded) {
           broadcast("Game finished")
           stop()
+          GameManager.games.remove(this)
           return@runTaskTimer
         }
         summonNextMob()
@@ -104,11 +93,11 @@ data class Game(
   }
 
   fun stop() {
+    waveEntities.forEach { mob -> mob.entity.remove() }
+    waveEntities.clear()
+    spawnedTowers.forEach { tower -> tower.entity.remove() }
+    spawnedTowers.clear()
     Bukkit.getScheduler().cancelTask(loop.taskId)
-    loop.cancel()
-    mobs.forEach { mob -> mob.entity.remove() }
-    mobs.clear()
-    towers.forEach { tower -> tower.entity.remove() }
-    towers.clear()
+    if(!::loop.isInitialized && !loop.isCancelled) loop.cancel()
   }
 }

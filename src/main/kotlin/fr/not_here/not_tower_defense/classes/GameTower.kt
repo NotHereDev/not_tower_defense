@@ -1,39 +1,42 @@
 package fr.not_here.not_tower_defense.classes
 
+import fr.not_here.not_tower_defense.config.models.GameTowerConfig
 import org.bukkit.Particle
 import org.bukkit.World
 import org.bukkit.entity.Entity
 import org.bukkit.entity.LivingEntity
 
-class GameTower(val position: Position, world: World, level: Int = 0, val data: GameTowerData){
+class GameTower(val config: GameTowerConfig, val position: Position, world: World, var level: Int = 0){
   val entity: Entity
   var target: LivingEntity? = null
-  var lastShot: Int = 0
+  private var lastShot: Int = 0
 
   init {
-    entity = world.spawnEntity(position.toLocation(world).add(0.5,1.0,0.5), data.entityType)
+    entity = world.spawnEntity(position.toLocation(world).add(0.5,1.0,0.5), config.entityTypeEnum)
     if(entity is LivingEntity){
       entity.isCollidable = false
       entity.setAI(false)
       entity.isCustomNameVisible = true
       entity.setGravity(false)
+      entity.isInvulnerable = true
     }
-    entity?.customName = data.name
+    entity?.customName = config.displayName
   }
 
   fun targetNearestEntity(entities: List<Entity>){
-    target = entity.getNearbyEntities(10.0, 10.0, 10.0).filterIsInstance<LivingEntity>().filter { entities.contains(it) }.minByOrNull { it.location.distance(entity.location) }
+    target = entity.getNearbyEntities(config.levelRanges[level],config.levelRanges[level],config.levelRanges[level]).filterIsInstance<LivingEntity>().filter { entities.contains(it) }.minByOrNull { it.location.distance(entity.location) }
     if(target != null) entity.teleport(entity.location.setDirection(target!!.location.toVector().subtract(entity.location.toVector())))
   }
 
   fun shotNearestEntity(entities: List<Entity>){
-    if(lastShot < data.cooldown){
+    if(lastShot < config.levelShotCooldowns[level]){
       lastShot++
       return
     }
+    lastShot = 0
     targetNearestEntity(entities)
     target?.noDamageTicks = 0
-    target?.damage(data.damage, entity)
+    target?.damage(config.levelDamages[level], entity)
     displayRayParticles()
   }
 

@@ -4,8 +4,8 @@ import fr.not_here.not_tower_defense.extensions.isBetween
 import org.bukkit.Bukkit
 
 data class Zone(
-  val from: Position,
-  val to: Position
+  var from: Position = Position(0.0, 0.0, 0.0),
+  var to: Position = Position(0.0, 0.0, 0.0)
 ){
   val center: Position
     get() = Position(

@@ -2,9 +2,11 @@ package fr.not_here.not_tower_defense
 
 import fr.not_here.not_tower_defense.commands.RunCommand
 import fr.not_here.not_tower_defense.commands.StopCommand
+import fr.not_here.not_tower_defense.config.ConfigLoader
 import fr.not_here.not_tower_defense.listeners.EntityCombustListener
 import fr.not_here.not_tower_defense.listeners.EntityDamageListener
 import fr.not_here.not_tower_defense.listeners.TowerInteractListener
+import fr.not_here.not_tower_defense.managers.GameManager
 import org.bukkit.plugin.java.JavaPlugin
 
 class NotTowerDefense : JavaPlugin() {
@@ -17,10 +19,12 @@ class NotTowerDefense : JavaPlugin() {
         server.pluginManager.registerEvents(TowerInteractListener(), this)
         server.pluginManager.registerEvents(EntityCombustListener(), this)
         server.pluginManager.registerEvents(EntityDamageListener(), this)
+
+        ConfigLoader.init()
     }
 
     override fun onDisable() {
-        RunCommand.gameInstances.forEach { it.stop() }
+        GameManager.games.forEach { it.stop() }
         // Plugin shutdown logic
     }
 

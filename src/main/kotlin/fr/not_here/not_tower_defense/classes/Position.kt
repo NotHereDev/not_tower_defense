@@ -5,9 +5,9 @@ import org.bukkit.World
 import org.bukkit.util.Vector
 
 data class Position (
-  val x: Double,
-  val y: Double,
-  val z: Double
+  var x: Double = 0.0,
+  var y: Double = 0.0,
+  var z: Double = 0.0
 ) {
 
   override operator fun equals(other: Any?): Boolean {

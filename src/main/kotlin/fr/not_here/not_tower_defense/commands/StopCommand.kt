@@ -1,6 +1,7 @@
 package fr.not_here.not_tower_defense.commands
 
 import fr.not_here.not_tower_defense.classes.*
+import fr.not_here.not_tower_defense.managers.GameManager
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -14,12 +15,7 @@ class StopCommand : CommandExecutor {
       sender.sendMessage("You must be a player to run this command")
       return false
     }
-    val gameInstance = RunCommand.gameInstances.find { it.players.contains(sender) }
-    if(gameInstance != null) {
-      sender.sendMessage("Stopping game...")
-      gameInstance.stop()
-      RunCommand.gameInstances.remove(gameInstance)
-    }
+    GameManager.stopGame(sender, true)
     return true
   }
 }
