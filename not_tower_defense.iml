@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module version="4">
+  <component name="AdditionalModuleElements">
+    <content url="file://$MODULE_DIR$" dumb="true">
+      <excludeFolder url="file://$MODULE_DIR$/test_server" />
+      <excludeFolder url="file://$MODULE_DIR$/test_server/build_tools/Bukkit/target" />
+      <excludeFolder url="file://$MODULE_DIR$/test_server/build_tools/CraftBukkit/target" />
+      <excludeFolder url="file://$MODULE_DIR$/test_server/build_tools/Spigot/Spigot-API/target" />
+      <excludeFolder url="file://$MODULE_DIR$/test_server/build_tools/Spigot/Spigot-Server/target" />
+    </content>
+  </component>
   <component name="AutoImportedSourceRoots">
     <option name="directories">
       <list>
