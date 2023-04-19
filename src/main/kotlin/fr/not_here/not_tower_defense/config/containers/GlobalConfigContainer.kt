@@ -15,8 +15,12 @@ data class GlobalConfigContainer(
       instance = null
       NotTowerDefense.instance.logger.info("§3Loading global config...")
       val configContainerInstance = ConfigLoader.loadConfig<GlobalConfigContainer>("global")
-      NotTowerDefense.instance.logger.info("§bLoaded global config.")
-      instance = configContainerInstance
+      if(configContainerInstance == null) {
+        NotTowerDefense.instance.logger.severe("§4Config cannot be loaded")
+      } else {
+        NotTowerDefense.instance.logger.info("§bLoaded global config.")
+        instance = configContainerInstance
+      }
     }
   }
 }

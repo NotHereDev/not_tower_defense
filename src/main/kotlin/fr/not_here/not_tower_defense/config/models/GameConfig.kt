@@ -23,7 +23,7 @@ data class GameConfig(
 ) {
     val towerOnBlockMaterial: Material get() = Material.getMaterial(towerOnBlockType)
 
-    init {
+    fun check() {
         if (waitingRoomSpawn == null) {
             waitingRoomSpawn = Position(waitingRoom.center.x, waitingRoom.center.y, waitingRoom.center.z)
         }
@@ -41,5 +41,7 @@ data class GameConfig(
                 }
             }
         }
+        mobs.forEach { it.check() }
+        towers.forEach { it.check() }
     }
 }

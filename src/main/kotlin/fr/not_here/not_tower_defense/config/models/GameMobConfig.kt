@@ -13,7 +13,7 @@ data class GameMobConfig(
 ) {
     val entityTypeEnum: EntityType get() = EntityType.valueOf(entityType)
 
-    init {
+    fun check() {
         if(entityType !in EntityType.values().map { it.name }) {
             throw IllegalArgumentException("Invalid entityType $entityType, on config path: game.mobs[?].entityType, for mob $name")
         }

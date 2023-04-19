@@ -15,9 +15,14 @@ data class GamesConfigContainer(
         fun load() {
             instance = null
             NotTowerDefense.instance.logger.info("§3Loading games config...")
-            val gamesConfigContainerInstance = ConfigLoader.loadConfig<GamesConfigContainer>("games/games")
-            NotTowerDefense.instance.logger.info("§bLoaded games config.")
-            instance = gamesConfigContainerInstance
+            val configContainerInstance = ConfigLoader.loadConfig<GamesConfigContainer>("games/games")
+            if(configContainerInstance == null) {
+                NotTowerDefense.instance.logger.severe("§4Config cannot be loaded")
+            } else {
+                NotTowerDefense.instance.logger.info("§bLoaded games config.")
+                configContainerInstance.games?.forEach { it.check() }
+                instance = configContainerInstance
+            }
         }
     }
 }

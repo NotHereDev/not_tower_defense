@@ -20,7 +20,7 @@ data class GameTowerConfig(
   val entityTypeEnum: EntityType
     get() = EntityType.valueOf(entityType)
 
-  init {
+  fun check() {
     if(levelCosts.size != levelRanges.size || levelCosts.size != levelDamages.size || levelCosts.size != levelShotCooldowns.size)
       throw IllegalArgumentException("All levelCosts, levelRange, levelDamage and levelShotCooldown must have the same size to define max upgradable level of tower $name")
     if(entityType !in EntityType.values().map { it.name }) {
