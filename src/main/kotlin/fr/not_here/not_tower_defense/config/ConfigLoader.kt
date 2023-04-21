@@ -3,6 +3,8 @@ package fr.not_here.not_tower_defense.config
 import fr.not_here.not_tower_defense.NotTowerDefense.Companion.instance
 import fr.not_here.not_tower_defense.config.containers.GamesConfigContainer
 import fr.not_here.not_tower_defense.config.containers.GlobalConfigContainer
+import fr.not_here.not_tower_defense.config.containers.MobsConfigContainer
+import fr.not_here.not_tower_defense.config.containers.TowersConfigContainer
 import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.constructor.CustomClassLoaderConstructor
 import org.yaml.snakeyaml.DumperOptions
@@ -73,6 +75,8 @@ object ConfigLoader {
 
     fun init() {
         GlobalConfigContainer.load()
+        MobsConfigContainer.load()
+        TowersConfigContainer.load()
         GamesConfigContainer.load()
     }
 }

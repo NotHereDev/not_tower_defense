@@ -15,7 +15,7 @@ data class GameMobConfig(
 
     fun check() {
         if(entityType !in EntityType.values().map { it.name }) {
-            throw IllegalArgumentException("Invalid entityType $entityType, on config path: game.mobs[?].entityType, for mob $name")
+            throw IllegalArgumentException("Invalid entityType $entityType, on config path: mobs[?].entityType, for mob $name")
         }
     }
 }

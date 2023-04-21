@@ -7,7 +7,9 @@ import org.bukkit.entity.LivingEntity
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityDamageByEntityEvent
+import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.EntityDeathEvent
+import org.bukkit.event.entity.EntityExplodeEvent
 import kotlin.math.roundToInt
 
 class EntityDamageListener: Listener {
@@ -30,5 +32,13 @@ class EntityDamageListener: Listener {
     if (!GameManager.isWaveEntity(event.entity) && !GameManager.isTowerEntity(event.entity)) return
     event.droppedExp = 0
     event.drops.clear()
+  }
+
+  @EventHandler
+  fun onEntityExplode(event: EntityDamageEvent) {
+    if (!GameManager.isWaveEntity(event.entity) && !GameManager.isTowerEntity(event.entity)) return
+    listOf(EntityDamageEvent.DamageCause.ENTITY_EXPLOSION, EntityDamageEvent.DamageCause.BLOCK_EXPLOSION).forEach {
+      if (event.cause == it) event.isCancelled = true
+    }
   }
 }

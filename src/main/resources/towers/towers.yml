@@ -1,0 +1,172 @@
+#COLORIZABLE PARTICLES: REDSTONE, SPELL_MOB and SPELL_MOB_AMBIENT
+towers:
+  - name: ray_tower
+    displayName: '§6Ray Tower'
+    displayItem: ARROW
+    entityType: SKELETON
+    startLevel: 0
+    towerType: RAY
+    particleType: REDSTONE
+    particleColor: 0x00FF00
+    levelCosts:
+      - 500
+      - 1500
+      - 3000
+    levelRanges:
+      - 6
+      - 8
+      - 10
+    levelDamages:
+      - 1
+      - 2
+      - 4
+    levelShotCooldowns:
+      - 10
+      - 8
+      - 6
+    towerModifiers:
+      - name: ray_destroyer
+        displayName: '§6Ray Destroyer'
+        entityType: SKELETON
+        startLevel: 0
+        towerType: RAY
+        particleType: REDSTONE
+        particleColor: 0x00FF00
+        levelCosts:
+          - 3000
+          - 8000
+          - 15000
+        levelRanges:
+          - 10
+          - 12
+          - 16
+        levelDamages:
+          - 20
+          - 30
+          - 45
+        levelShotCooldowns:
+          - 100
+          - 80
+          - 60
+      - name: ray_gatling
+        displayName: '§6Ray Gatling'
+        entityType: SKELETON
+        startLevel: 0
+        towerType: RAY
+        particleType: REDSTONE
+        particleColor: 0x00FF00
+        levelCosts:
+          - 3000
+          - 6000
+          - 9000
+        levelRanges:
+          - 10
+          - 12
+          - 14
+        levelDamages:
+          - 2
+          - 4
+          - 8
+        levelShotCooldowns:
+          - 6
+          - 4
+          - 2
+  - name: bomber
+    displayName: '§6Bomber'
+    displayItem: TNT
+    entityType: CREEPER
+    startLevel: 0
+    towerType: EXPLOSION
+    particleType: REDSTONE
+    particleColor: 0xFF0000
+    levelCosts:
+      - 3000
+      - 6000
+      - 9000
+    levelRanges:
+      - 10
+      - 12
+      - 14
+    levelDamages:
+      - 2
+      - 4
+      - 8
+    levelShotCooldowns:
+      - 6
+      - 4
+      - 2
+  - name: mage
+    displayName: '§6Mage'
+    displayItem: BLAZE_ROD
+    entityType: VILLAGER
+    startLevel: 0
+    towerType: SPARK
+    particleType: REDSTONE
+    particleColor: 0x0000FF
+    levelCosts:
+      - 3000
+      - 6000
+      - 9000
+    levelRanges:
+      - 10
+      - 12
+      - 14
+    levelDamages:
+      - 2
+      - 4
+      - 8
+    levelShotCooldowns:
+      - 6
+      - 4
+      - 2
+  - name: ender
+    displayName: '§6Ender'
+    displayItem: ENDER_PEARL
+    entityType: ENDERMAN
+    startLevel: 0
+    towerType: RAY
+    particleType: REDSTONE
+    particleColor: 0xFF00FF
+    tpBackChance: 0.01
+    levelCosts:
+      - 3000
+      - 6000
+      - 9000
+    levelRanges:
+      - 10
+      - 12
+      - 14
+    levelDamages:
+      - 2
+      - 4
+      - 8
+    levelShotCooldowns:
+      - 6
+      - 4
+      - 2
+  - name: supermob
+    displayName: '§6SuperMob'
+    displayItem: DIAMOND
+    entityType: EVOKER
+    startLevel: 0
+    towerType: AOE
+    particleType: REDSTONE
+    particleColor: 0x00FFFF
+    tpStartChance: 0.01
+    aoeRange: 3
+    levelCosts:
+      - 3000
+      - 6000
+      - 9000
+    levelRanges:
+      - 10
+      - 12
+      - 14
+    levelDamages:
+      - 2
+      - 4
+      - 8
+    levelShotCooldowns:
+      - 6
+      - 4
+      - 2

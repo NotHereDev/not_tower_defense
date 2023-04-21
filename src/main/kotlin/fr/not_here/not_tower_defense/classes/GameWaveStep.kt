@@ -1,6 +1,7 @@
 package fr.not_here.not_tower_defense.classes
 
 import fr.not_here.not_tower_defense.NotTowerDefense
+import fr.not_here.not_tower_defense.config.containers.MobsConfigContainer
 import fr.not_here.not_tower_defense.config.models.GameWaveStepConfig
 
 class GameWaveStep(val config: GameWaveStepConfig) {
@@ -17,7 +18,7 @@ class GameWaveStep(val config: GameWaveStepConfig) {
     spawned++
     lastSpawned = 0
     return GameWaveEntity(
-      relatedGame.gameConfig.mobs.find { it.name == config.mobName }!!,
+      MobsConfigContainer.instance!!.mobs!!.find { it.name == config.mobName }!!,
       relatedGame, spawnRoom.centerGround, targetZone.centerGround, config.strengthMultiplier
     )
   }

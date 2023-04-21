@@ -2,6 +2,7 @@ package fr.not_here.not_tower_defense.classes
 
 import fr.not_here.not_tower_defense.NotTowerDefense
 import fr.not_here.not_tower_defense.config.models.GameConfig
+import fr.not_here.not_tower_defense.config.models.GameTowerConfig
 import fr.not_here.not_tower_defense.managers.GameManager
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -14,7 +15,6 @@ import org.bukkit.scheduler.BukkitTask
 data class Game(
   val gameConfig: GameConfig,
   val players: List<Player>,
-  val towerOnBlockType: Material = Material.GOLD_BLOCK,
   val world: World = Bukkit.getWorld("world")!!,
 ){
   private var lastWaveEndTicksElapsed: Long = 0
@@ -57,11 +57,13 @@ data class Game(
     }
   }
 
-  fun spawnOrGetTower(position: Position): GameTower {
+  fun hasTower(position: Position) = spawnedTowers.any { it.position == position }
+
+  fun spawnOrGetTower(position: Position, towerConf: GameTowerConfig = gameConfig.towers[0]): GameTower {
     spawnedTowers.removeIf { tower -> tower.entity.isDead || !tower.entity.isValid }
     var tower = spawnedTowers.find { it.position == position }
     if(tower != null) return tower
-    tower = GameTower(gameConfig.towers[0], position, world, 0)
+    tower = GameTower(towerConf, position, world, 0)
     spawnedTowers.add(tower)
     return tower
   }

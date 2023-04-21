@@ -2,6 +2,8 @@ package fr.not_here.not_tower_defense.config.models
 
 import fr.not_here.not_tower_defense.classes.Position
 import fr.not_here.not_tower_defense.classes.Zone
+import fr.not_here.not_tower_defense.config.containers.MobsConfigContainer
+import fr.not_here.not_tower_defense.config.containers.TowersConfigContainer
 import org.bukkit.Material
 
 
@@ -15,12 +17,14 @@ data class GameConfig(
     var startRoom: Zone = Zone(Position(0.0, 0.0, 0.0), Position(0.0, 0.0, 0.0)),
     var endRoom: Zone = Zone(Position(0.0, 0.0, 0.0), Position(0.0, 0.0, 0.0)),
     var pathSteps: List<Zone> = listOf(),
-    var towers: List<GameTowerConfig> = listOf(),
+    var towerNames: List<String> = listOf(),
     var towerOnBlockType: String = Material.GOLD_BLOCK.name,
-    var mobs: List<GameMobConfig> = listOf(),
     var waveChangeTimeout: Int = 100,
     var waves: List<GameWaveConfig> = listOf(),
 ) {
+
+    val towers: List<GameTowerConfig> get() = TowersConfigContainer.instance!!.towers!!.filter { it.name in towerNames }
+
     val towerOnBlockMaterial: Material get() = Material.getMaterial(towerOnBlockType)
 
     fun check() {
@@ -33,15 +37,22 @@ data class GameConfig(
         if (towerOnBlockType !in Material.values().map { it.name }) {
             throw IllegalArgumentException("Invalid towerOnBlockType: $towerOnBlockType, on config path: game.$name")
         }
-        val mobNames = mobs.map { it.name }
+        val mobNames = MobsConfigContainer.instance!!.mobs!!.map { it.name }
         for ((i, wave) in waves.withIndex()) {
             for ((j, step) in wave.steps.withIndex()) {
                 if (step.mobName !in mobNames) {
-                    throw IllegalArgumentException("Mob ${step.mobName} is not defined in mobs list (game.$name.mobs[?].name) on config path: game.$name.waves[$i].steps[$j].mobName")
+                    throw IllegalArgumentException("Mob ${step.mobName} is not defined in mobs list (mobs[?].name) on config path: game.$name.waves[$i].steps[$j].mobName")
                 }
             }
         }
-        mobs.forEach { it.check() }
-        towers.forEach { it.check() }
+        if(towerNames.isEmpty()) {
+            throw IllegalArgumentException("No tower defined in game.$name.towerNames")
+        }
+        val configTowerNames = TowersConfigContainer.instance!!.towers!!.map { it.name }
+        towerNames.forEach { towerName ->
+            if(towerName !in configTowerNames) {
+                throw IllegalArgumentException("Tower $towerName is not defined in towers list (towers[?].name) on config path: game.$name.towerNames[?]")
+            }
+        }
     }
 }

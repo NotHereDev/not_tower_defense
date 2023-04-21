@@ -1,0 +1,22 @@
+mobs:
+  - name: zombie
+    displayName: '§6Zombie'
+    entityType: ZOMBIE
+    health: 10
+    damage: 1
+    speed: 0.2
+    reward: 10
+  - name: skeleton
+    displayName: '§6Skeleton'
+    entityType: SKELETON
+    health: 20
+    damage: 2
+    speed: 0.3
+    reward: 20
+  - name: creeper
+    displayName: '§6Creeper'
+    entityType: CREEPER
+    health: 30
+    damage: 3
+    speed: 0.4
+    reward: 30
