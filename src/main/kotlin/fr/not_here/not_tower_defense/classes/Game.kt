@@ -73,6 +73,7 @@ data class Game(
   }
 
   fun run() : BukkitTask {
+    players.forEach { player -> player.teleport(gameConfig.gameRoomSpawn!!.toLocation(world)) }
     if(!::loop.isInitialized || loop.isCancelled) {
       broadcast("starting internal game loop")
       world.entities?.filter { it !is Player }?.filter { gameConfig.gameRoom.contains(Position.fromLocation(it.location)) }?.forEach { it.remove() }

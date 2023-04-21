@@ -18,3 +18,9 @@ commands:
     permission-message: You don't have the permission to stop the game
     usage: /stop
     executor: fr.not_here.not_tower_defense.commands.StopCommand
+  td:
+    description: Main command used to run the game
+    aliases: [towerdefense, nottowerdefense, not_tower_defense]
+    permission: not_tower_defense.td
+    permission-message: You don't have the permission to run the game
+    usage: /td <start|stop|invite> [players]
