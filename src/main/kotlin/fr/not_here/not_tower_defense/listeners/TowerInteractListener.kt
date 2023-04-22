@@ -17,7 +17,8 @@ class TowerInteractListener: Listener {
     val block = event.clickedBlock ?: return;
     val game = GameManager.getGame(event.player, false) ?: return
 
-    if(block.type != game.gameConfig.towerOnBlockMaterial && game.gameConfig.gameRoom.contains(Position.fromLocation(block.location))) return
+    if(!game.gameConfig.gameRoom.contains(Position.fromLocation(block.location))) return
+    if(block.type != game.gameConfig.towerOnBlockMaterial) return
     if(game.hasTower(Position.fromLocation(block.location)))
       return towerInteract(event.player, Position.fromLocation(block.location), game.spawnOrGetTower(Position.fromLocation(block.location), player=event.player)!!)
 
