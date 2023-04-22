@@ -36,7 +36,7 @@ object GameManager {
       return
     }
     if (GamesConfigContainer.instance!!.games!!.any { it.name == name }) {
-      games += Game(GamesConfigContainer.instance!!.games!!.find { it.name == name }!!, listOf(player))
+      games += Game(GamesConfigContainer.instance!!.games!!.find { it.name == name }!!, mutableListOf(player))
       games.last().run()
       if(sendMessages) player.sendMessage("Game started")
     }
@@ -61,7 +61,7 @@ object GameManager {
     val game = getGame(player, sendMessages) ?: return
     game.stop()
     games.remove(game)
-    games += Game(game.gameConfig, listOf(player))
+    games += Game(game.gameConfig, mutableListOf(player))
     if(sendMessages) player.sendMessage("Game restarted")
   }
 

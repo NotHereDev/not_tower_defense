@@ -1,6 +1,7 @@
 games:
   - name: game
     displayName: '§6Game'
+    startingMoney: 1000
     waitingRoom:
       from:
         x: -241

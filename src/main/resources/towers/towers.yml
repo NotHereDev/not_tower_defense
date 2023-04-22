@@ -1,4 +1,3 @@
-#COLORIZABLE PARTICLES: REDSTONE, SPELL_MOB and SPELL_MOB_AMBIENT
 towers:
   - name: ray_tower
     displayName: '§6Ray Tower'
@@ -10,17 +9,21 @@ towers:
     particleColor: 0x00FF00
     levelCosts:
       - 500
+      - 800
       - 1500
       - 3000
     levelRanges:
+      - 5
       - 6
       - 8
       - 10
     levelDamages:
       - 1
+      - 1.5
       - 2
       - 4
     levelShotCooldowns:
+      - 12
       - 10
       - 8
       - 6
@@ -33,18 +36,22 @@ towers:
         particleType: REDSTONE
         particleColor: 0x00FF00
         levelCosts:
+          - 2000
           - 3000
           - 8000
           - 15000
         levelRanges:
+          - 8
           - 10
           - 12
           - 16
         levelDamages:
+          - 15
           - 20
           - 30
           - 45
         levelShotCooldowns:
+          - 120
           - 100
           - 80
           - 60
@@ -56,18 +63,22 @@ towers:
         particleType: REDSTONE
         particleColor: 0x00FF00
         levelCosts:
+          - 2000
           - 3000
           - 6000
           - 9000
         levelRanges:
+          - 8
           - 10
           - 12
           - 14
         levelDamages:
+          - 1
           - 2
           - 4
           - 8
         levelShotCooldowns:
+          - 8
           - 6
           - 4
           - 2
@@ -80,18 +91,22 @@ towers:
     particleType: REDSTONE
     particleColor: 0xFF0000
     levelCosts:
+      - 600
       - 3000
       - 6000
       - 9000
     levelRanges:
+      - 8
       - 10
       - 12
       - 14
     levelDamages:
+      - 1
       - 2
       - 4
       - 8
     levelShotCooldowns:
+      - 8
       - 6
       - 4
       - 2
@@ -104,18 +119,22 @@ towers:
     particleType: REDSTONE
     particleColor: 0x0000FF
     levelCosts:
+      - 500
       - 3000
       - 6000
       - 9000
     levelRanges:
+      - 8
       - 10
       - 12
       - 14
     levelDamages:
+      - 1
       - 2
       - 4
       - 8
     levelShotCooldowns:
+      - 8
       - 6
       - 4
       - 2
@@ -128,19 +147,24 @@ towers:
     particleType: REDSTONE
     particleColor: 0xFF00FF
     tpBackChance: 0.01
+    tpStartChance: 0.01
     levelCosts:
+      - 800
       - 3000
       - 6000
       - 9000
     levelRanges:
+      - 8
       - 10
       - 12
       - 14
     levelDamages:
+      - 1
       - 2
       - 4
       - 8
     levelShotCooldowns:
+      - 8
       - 6
       - 4
       - 2
@@ -155,18 +179,22 @@ towers:
     tpStartChance: 0.01
     aoeRange: 3
     levelCosts:
+      - 1500
       - 3000
       - 6000
       - 9000
     levelRanges:
+      - 8
       - 10
       - 12
       - 14
     levelDamages:
+      - 1
       - 2
       - 4
       - 8
     levelShotCooldowns:
+      - 8
       - 6
       - 4
       - 2

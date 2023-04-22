@@ -6,12 +6,37 @@ import org.bukkit.Particle
 import org.bukkit.World
 import org.bukkit.entity.Entity
 import org.bukkit.entity.LivingEntity
+import org.bukkit.entity.Player
 import kotlin.math.roundToInt
 
-class GameTower(val config: GameTowerConfig, val position: Position, val world: World, var level: Int = 0){
+class GameTower(private val _config: GameTowerConfig, val relatedGame: Game, val position: Position, val world: World, var level: Int = 0){
   lateinit var entity: Entity
   private var target: LivingEntity? = null
   private var lastShot: Int = 0
+  private val modifierPath = mutableListOf<Int>()
+  val maxLevel get() = config.startLevel + config.levelCosts.size - 1
+
+  val config: GameTowerConfig
+    get() {
+      var modifier = _config
+      for (mp in modifierPath) {
+        val mod = modifier.towerModifiers?.getOrNull(mp)
+        if(mod == null) return modifier
+        else modifier = mod
+      }
+      return modifier
+    }
+
+  fun selectModifier(modifier: Int){
+    if(config.towerModifiers?.getOrNull(modifier) == null) return
+    modifierPath.add(modifier)
+    entity.customName = config.displayName
+    level = config.startLevel
+  }
+
+  val levelCosts get() = config.run {
+    levelCosts.withIndex().associate { it.index to if ((level + startLevel) >= it.index) null else it.value }
+  }
 
   fun spawnEntity() {
     entity = world.spawnEntity(position.toLocation(world).add(0.5,1.0,0.5), config.entityTypeEnum)
@@ -29,7 +54,7 @@ class GameTower(val config: GameTowerConfig, val position: Position, val world: 
     spawnEntity()
   }
 
-  fun targetNearestEntity(entities: List<Entity>){
+  private fun targetNearestEntity(entities: List<Entity>){
     if(entity !is LivingEntity) spawnEntity()
     target = entity.getNearbyEntities(config.levelRanges[level],config.levelRanges[level],config.levelRanges[level]).filterIsInstance<LivingEntity>().filter { entities.contains(it) }.minByOrNull { it.location.distance(entity.location) }
     if(target != null) entity.teleport(entity.location.setDirection(target!!.location.add(0.0,target!!.height/2,0.0).toVector().subtract(entity.location.toVector())))
@@ -71,6 +96,13 @@ class GameTower(val config: GameTowerConfig, val position: Position, val world: 
   private fun damage(entity: Entity?){
     if(entity !is LivingEntity) return
     entity.damage(config.levelDamages[level], this.entity)
+    if(entity.health <= 0.0) relatedGame.addMoneyReward(relatedGame.getWaveEntityFromEntity(entity)?.config?.reward ?: 0 )
+    if(config.tpBackChance != 0.0 && config.tpBackChance > Math.random()) {
+      relatedGame.getWaveEntityFromEntity(entity)?.tpBack()
+    }
+    if(config.tpStartChance != 0.0 && config.tpStartChance > Math.random()) {
+      relatedGame.getWaveEntityFromEntity(entity)?.tpBackToSpawn()
+    }
   }
   private fun damage(entities: List<Entity?>){
     entities.forEach { damage(it) }
@@ -80,6 +112,7 @@ class GameTower(val config: GameTowerConfig, val position: Position, val world: 
   fun findEntitiesNextEachOther(target: Entity, entitiesFilter: List<Entity>): List<Entity>{
     val entities = mutableListOf<Entity?>(target)
     for(i in 0..config.aoeRange.roundToInt()){
+      if(entities[i] == null) continue
       entities.add(entities[i]!!.getNearbyEntities(config.aoeRange,config.aoeRange,config.aoeRange).filterIsInstance<LivingEntity>().filter { entitiesFilter.contains(it) }.minByOrNull { it.location.distance(entities[i]!!.location) })
     }
     return entities.filterNotNull()
@@ -99,5 +132,25 @@ class GameTower(val config: GameTowerConfig, val position: Position, val world: 
 
   fun rayCast(target: Entity, source: Entity = entity, fromEye: Boolean = true){
     Particles.rayCast(source.location.add(0.0, if(fromEye && source is LivingEntity) source.eyeHeight else source.height/2,0.0), target.location.add(0.0,target.height /2,0.0), Particle.REDSTONE, 20, config.particleColor)
+  }
+
+  fun tryLevelUp(player: Player){
+    if(level >= maxLevel) {
+      player.sendMessage("§cThis tower is already max level!")
+      return
+    }
+    if(relatedGame.getPlayerMoney(player) < config.levelCosts[level+1]) {
+      player.sendMessage("§cYou need ${config.levelCosts[level+1]}$ to level up this tower!")
+      return
+    }
+    player.sendMessage("§aYou leveled up this tower to level ${level+1}!, costed ${config.levelCosts[level+1]}")
+    relatedGame.addPlayerMoney(player, -config.levelCosts[level+1])
+    level++
+  }
+
+  fun tryLevelUp(player: Player, targetLevel: Int){
+    for(i in level until targetLevel){
+      tryLevelUp(player)
+    }
   }
 }

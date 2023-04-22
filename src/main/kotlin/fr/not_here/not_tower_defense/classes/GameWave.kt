@@ -4,11 +4,11 @@ import fr.not_here.not_tower_defense.NotTowerDefense
 import fr.not_here.not_tower_defense.config.models.GameWaveConfig
 
 class GameWave (val config: GameWaveConfig) {
-  private val steps = config.steps.map { GameWaveStep(it) }
+  val steps = config.steps.map { GameWaveStep(it) }
   private var lastStepFinishedTicksUntil = 0
   val allSpawned: Boolean get() = steps.all { it.allSpawned }
 
-  fun spawnNextMob(relatedGame: Game, spawnRoom: Zone, targetZone: Zone): List<GameWaveEntity> {
+  fun spawnNextMob(relatedGame: Game): List<GameWaveEntity> {
     if(allSpawned) return listOf()
     var isAfterUnfinished: Boolean? = null
     val mobs = mutableListOf<GameWaveEntity>()
@@ -19,7 +19,7 @@ class GameWave (val config: GameWaveConfig) {
       }
       if(!step.canSpawnWithPrevious && isAfterUnfinished == true) break
       if(isAfterUnfinished == null) isAfterUnfinished = !step.allSpawned
-      mobs += step.spawnNextMob(relatedGame, spawnRoom, targetZone) ?: continue
+      mobs += step.spawnNextMob(relatedGame) ?: continue
     }
     return mobs
   }

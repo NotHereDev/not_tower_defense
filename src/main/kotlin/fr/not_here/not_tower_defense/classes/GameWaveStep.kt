@@ -12,14 +12,14 @@ class GameWaveStep(val config: GameWaveStepConfig) {
   val canSpawnWithPrevious get() = canSpawn && config.spawnWithPrevious
   val timeout get() = config.timeout
 
-  fun spawnNextMob(relatedGame: Game, spawnRoom: Zone, targetZone: Zone): GameWaveEntity? {
+  fun spawnNextMob(relatedGame: Game): GameWaveEntity? {
     lastSpawned++
     if (!canSpawn) return null
     spawned++
     lastSpawned = 0
     return GameWaveEntity(
       MobsConfigContainer.instance!!.mobs!!.find { it.name == config.mobName }!!,
-      relatedGame, spawnRoom.centerGround, targetZone.centerGround, config.strengthMultiplier
+      relatedGame, config.strengthMultiplier
     )
   }
 }

@@ -1,119 +1,79 @@
 package fr.not_here.not_tower_defense.menu.start
 
+import fr.not_here.not_tower_defense.NotTowerDefense
 import fr.not_here.not_tower_defense.config.containers.GamesConfigContainer
 import fr.not_here.not_tower_defense.extensions.addAll
-import fr.not_here.not_tower_defense.extensions.fill
 import fr.not_here.not_tower_defense.extensions.glowing
-import fr.not_here.not_tower_defense.extensions.head
 import fr.not_here.not_tower_defense.managers.GameManager
+import fr.not_here.not_tower_defense.menu.CustomMenuHolder
+import fr.not_here.not_tower_defense.menu.MenuItem
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
-import org.bukkit.event.inventory.InventoryClickEvent
-import org.bukkit.event.inventory.InventoryDragEvent
-import org.bukkit.event.inventory.InventoryEvent
-import org.bukkit.event.inventory.InventoryOpenEvent
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.meta.SkullMeta
 import java.util.UUID
+import kotlin.math.min
 
-class StartMenuHolder(val player: Player): CustomMenuHolder {
+class StartMenuHolder(val player: Player): CustomMenuHolder() {
   override fun getInventory() = inv
 
   private val inv: Inventory = Bukkit.createInventory(this, 6*9, "Start Menu")
   private var playerPage = 0
   private val powers = listOf("Fire", "Water", "Earth", "Air", "Light", "Dark", "Ether")
   private var powerNameSelected = ""
-  private val playersSelected = mutableMapOf<String, UUID>()
+  private val playersSelected = mutableListOf<UUID>()
 
-  override fun onEvent(event: InventoryEvent){
-    when(event){
-      is InventoryDragEvent -> {
-        event.isCancelled = true
-      }
-      is InventoryClickEvent -> {
-        event.isCancelled = true
-        onClick(event.slot, event.currentItem)
-      }
-      is InventoryOpenEvent -> onOpen()
-    }
-  }
+  val canGoNextPage: Boolean
+    get() = playerPage < (Bukkit.getOnlinePlayers().size - 1) / 14
 
-  private fun onClick(slot: Int, item: ItemStack?){
-    if(item == null) return
-    when(slot){
-      in 9*1+1..9*1+7 -> {selectPlayer(item)}
-      in 9*2+1..9*2+7 -> {selectPlayer(item)}
-      9*3+2 -> {
-        if (playerPage == 0) return
-        playerPage--
-        updatePlayers()
-      }
-      9*3+6 -> {
-        if(playerPage * 14 + 14 >= player.location.world.players.size) return
-        playerPage++
-        updatePlayers()
-      }
-      in 9*4+1..9*4+7 -> {
-        powerNameSelected = powers[slot - 9*4 - 1]
-        updatePowers()
-      }
-      9*5+4 -> {
-        if(powerNameSelected == "") return
-        val name = GamesConfigContainer.instance?.games?.firstOrNull()?.name ?: return
+  val canGoPreviousPage: Boolean
+    get() = playerPage > 0
 
-        GameManager.startOrRestartGame(name, player, true)
-      }
-    }
-  }
+  override fun onClick(slot: Int, item: ItemStack?){}
 
-  fun selectPlayer(item: ItemStack){
-    if(item.type != Material.SKULL_ITEM && item.itemMeta !is SkullMeta) {
-      if(playersSelected.contains(player.displayName)) {
-        playersSelected.remove(player.displayName)
-      }
-    } else {
-      val skullOwner = (item.itemMeta as SkullMeta).owningPlayer
-      val player = Bukkit.getPlayer(skullOwner.uniqueId)
-      playersSelected[player.displayName] = player.uniqueId
-    }
-    updatePlayers()
-  }
-
-  private fun onOpen(){
-    inv.fill(ItemStack(Material.STAINED_GLASS_PANE, 1, 15.toShort()))
-    //we want to empty the inventory where player heads will appear
-    inv.addAll(listOf(ItemStack(Material.AIR), ItemStack(Material.AIR), ItemStack(Material.AIR), ItemStack(Material.AIR), ItemStack(Material.AIR), ItemStack(Material.AIR), ItemStack(Material.AIR)), 9*1+1)
-    inv.addAll(listOf(ItemStack(Material.AIR), ItemStack(Material.AIR), ItemStack(Material.AIR), ItemStack(Material.AIR), ItemStack(Material.AIR), ItemStack(Material.AIR), ItemStack(Material.AIR)), 9*2+1)
+  override fun onOpen(){
+    fill(MenuItem(Material.STAINED_GLASS_PANE, 1, 15.toShort()))
+    fill(MenuItem(Material.AIR), 2, 2, 7, 2)
     updatePlayers()
     updatePowers()
-    inv.setItem(9*5+4, ItemStack(Material.WOOL, 1, 5.toShort()).apply { itemMeta = itemMeta.apply { displayName = "Start" } })
+    setItem(MenuItem(Material.WOOL, 1, 5.toShort(), "Démarrer").apply { onClick = { startGame() } }, 5, 6)
+  }
+
+  fun startGame(){
+    if(powerNameSelected == "") return
+    val name = GamesConfigContainer.instance?.games?.firstOrNull()?.name ?: return
+
+    GameManager.startOrRestartGame(name, player, true)
+    player.closeInventory()
+  }
+  fun selectPlayer(player: Player){
+    if(playersSelected.contains(player.uniqueId)) playersSelected.remove(player.uniqueId)
+    else playersSelected.add(player.uniqueId)
+    updatePlayers()
   }
 
   private fun updatePlayers(){
-    val players = player.location.world.players.filter { it != player && GameManager.games.map { it.players }.flatten().contains(it) }
+    val players = player.location.world.players.filter { !GameManager.games.map { g -> g.players }.flatten().contains(it) }
     val items = players.map {
-      if(playersSelected.containsValue(it.uniqueId))
-        ItemStack(Material.BARRIER).apply { itemMeta = itemMeta.apply { displayName = it.displayName } }
-      else it.head
+      if(playersSelected.contains(it.uniqueId))
+        MenuItem(Material.BARRIER, name = it.displayName).apply{ onClick = { selectPlayer(it) } }
+      else MenuItem(player, name = it.displayName).apply{ onClick = { selectPlayer(it) } }
     }
-    if(items.size >= playerPage * 14 + 1)
-      inv.addAll(items.subList(0 + playerPage * 14, (7 + playerPage * 14).coerceAtMost(players.size)), 9*1+1)
-    if(items.size >= playerPage * 14 + 8)
-      inv.addAll(items.subList(7 + playerPage * 14, (14 + playerPage * 14).coerceAtMost(players.size)), 9*2+1)
+    fill(items.subList(min(playerPage * 14, items.size), min(playerPage * 14 + 14, items.size)), 2, 2, 7, 2)
 
-    val canGoBack = playerPage > 0
-    inv.setItem(9*3+2, ItemStack(if(!canGoBack) Material.BARRIER else Material.ARROW, 1).apply { itemMeta = itemMeta.apply { displayName = "Précédent" } })
-    val canGoForward = players.size > playerPage * 14 + 14
-    inv.setItem(9*3+6, ItemStack(if(!canGoBack) Material.BARRIER else Material.ARROW, 1).apply { itemMeta = itemMeta.apply { displayName = "Suivant" } })
+    setItem(MenuItem(if(!canGoPreviousPage) Material.BARRIER else Material.ARROW, name = "Précédent").apply { onClick = {
+      if(canGoPreviousPage) { playerPage--; updatePlayers() }
+    } }, 3, 4)
+    setItem(MenuItem(if(!canGoNextPage) Material.BARRIER else Material.ARROW, name = "Suivant").apply { onClick = {
+      if(canGoNextPage) { playerPage++; updatePlayers() }
+    } }, 7, 4)
   }
 
   private fun updatePowers(){
-    val items = powers.map { ItemStack(Material.WOOL, 1, 0.toShort()).apply { itemMeta = itemMeta.apply { displayName = it } } }
     if(powerNameSelected.isEmpty()) powerNameSelected = powers[0]
-    items[powers.indexOf(powerNameSelected)].glowing
-    inv.addAll(items, 9*4+1)
+    val items = powers.map { MenuItem(Material.WOOL, name=it).apply { onClick = { powerNameSelected = it; updatePowers() } } }
+    items[powers.indexOf(powerNameSelected)].glow
+    fill(items, 2, 5, 7, 1)
   }
-
 }

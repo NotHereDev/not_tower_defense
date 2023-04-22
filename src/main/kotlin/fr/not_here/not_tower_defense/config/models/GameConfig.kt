@@ -21,6 +21,7 @@ data class GameConfig(
     var towerOnBlockType: String = Material.GOLD_BLOCK.name,
     var waveChangeTimeout: Int = 100,
     var waves: List<GameWaveConfig> = listOf(),
+    var startingMoney: Int = 100,
 ) {
 
     val towers: List<GameTowerConfig> get() = TowersConfigContainer.instance!!.towers!!.filter { it.name in towerNames }

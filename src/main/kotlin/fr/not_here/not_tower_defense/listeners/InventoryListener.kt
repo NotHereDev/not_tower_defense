@@ -1,6 +1,6 @@
 package fr.not_here.not_tower_defense.listeners
 
-import fr.not_here.not_tower_defense.menu.start.CustomMenuHolder
+import fr.not_here.not_tower_defense.menu.CustomMenuHolder
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
