@@ -7,6 +7,7 @@ towers:
     towerType: RAY
     particleType: REDSTONE
     particleColor: 0x00FF00
+    fireTicksInflicted: 500
     levelCosts:
       - 500
       - 800
@@ -116,6 +117,10 @@ towers:
     entityType: VILLAGER
     startLevel: 0
     towerType: SPARK
+    slowDownChance: 0.1
+    slowDownDuration: 100
+    heroPowerEarnPerTick: 0.5
+    slowDownPower: 1
     particleType: REDSTONE
     particleColor: 0x0000FF
     levelCosts:
@@ -148,6 +153,8 @@ towers:
     particleColor: 0xFF00FF
     tpBackChance: 0.01
     tpStartChance: 0.01
+    damageUpgradeStack: 1.5
+    maxDamageUpgradeStack: 10
     levelCosts:
       - 800
       - 3000
@@ -178,6 +185,9 @@ towers:
     particleColor: 0x00FFFF
     tpStartChance: 0.01
     aoeRange: 3
+    slowDownChance: 0.1
+    slowDownDuration: 100
+    slowDownPower: 0.5
     levelCosts:
       - 1500
       - 3000

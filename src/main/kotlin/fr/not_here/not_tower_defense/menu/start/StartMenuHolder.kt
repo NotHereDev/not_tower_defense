@@ -2,6 +2,9 @@ package fr.not_here.not_tower_defense.menu.start
 
 import fr.not_here.not_tower_defense.NotTowerDefense
 import fr.not_here.not_tower_defense.config.containers.GamesConfigContainer
+import fr.not_here.not_tower_defense.config.containers.GlobalConfigContainer
+import fr.not_here.not_tower_defense.config.containers.PowersConfigContainer
+import fr.not_here.not_tower_defense.config.models.GamePowerConfig
 import fr.not_here.not_tower_defense.extensions.addAll
 import fr.not_here.not_tower_defense.extensions.glowing
 import fr.not_here.not_tower_defense.managers.GameManager
@@ -20,9 +23,12 @@ class StartMenuHolder(val player: Player): CustomMenuHolder() {
 
   private val inv: Inventory = Bukkit.createInventory(this, 6*9, "Start Menu")
   private var playerPage = 0
-  private val powers = listOf("Fire", "Water", "Earth", "Air", "Light", "Dark", "Ether")
-  private var powerNameSelected = ""
+  private val powers = mutableListOf<GamePowerConfig>().apply { addAll(PowersConfigContainer.instance!!.powers!!) }
+  private var powerNameSelected = PowersConfigContainer.instance!!.powers!!.first().name
   private val playersSelected = mutableListOf<UUID>()
+
+  val powerSelected: GamePowerConfig
+    get() = powers.first { it.name == powerNameSelected }
 
   val canGoNextPage: Boolean
     get() = playerPage < (Bukkit.getOnlinePlayers().size - 1) / 14
@@ -41,12 +47,10 @@ class StartMenuHolder(val player: Player): CustomMenuHolder() {
   }
 
   fun startGame(){
-    if(powerNameSelected == "") return
-    val name = GamesConfigContainer.instance?.games?.firstOrNull()?.name ?: return
-
-    GameManager.startOrRestartGame(name, player, true)
+    GameManager.startOrRestartGame(player, powerSelected, true)
     player.closeInventory()
   }
+
   fun selectPlayer(player: Player){
     if(playersSelected.contains(player.uniqueId)) playersSelected.remove(player.uniqueId)
     else playersSelected.add(player.uniqueId)
@@ -62,18 +66,20 @@ class StartMenuHolder(val player: Player): CustomMenuHolder() {
     }
     fill(items.subList(min(playerPage * 14, items.size), min(playerPage * 14 + 14, items.size)), 2, 2, 7, 2)
 
-    setItem(MenuItem(if(!canGoPreviousPage) Material.BARRIER else Material.ARROW, name = "Précédent").apply { onClick = {
+    setItem(MenuItem(if(!canGoPreviousPage) Material.BARRIER else Material.ARROW, name = GlobalConfigContainer.instance!!.previous).apply { onClick = {
       if(canGoPreviousPage) { playerPage--; updatePlayers() }
     } }, 3, 4)
-    setItem(MenuItem(if(!canGoNextPage) Material.BARRIER else Material.ARROW, name = "Suivant").apply { onClick = {
+    setItem(MenuItem(if(!canGoNextPage) Material.BARRIER else Material.ARROW, name = GlobalConfigContainer.instance!!.next).apply { onClick = {
       if(canGoNextPage) { playerPage++; updatePlayers() }
     } }, 7, 4)
   }
 
   private fun updatePowers(){
-    if(powerNameSelected.isEmpty()) powerNameSelected = powers[0]
-    val items = powers.map { MenuItem(Material.WOOL, name=it).apply { onClick = { powerNameSelected = it; updatePowers() } } }
-    items[powers.indexOf(powerNameSelected)].glow
-    fill(items, 2, 5, 7, 1)
+    val items = powers.map { MenuItem(it.displayItemEnum, name=it.displayName).apply {
+      lore = mutableListOf(GlobalConfigContainer.instance!!.costPattern.replace("{cost}", it.cost.toString())).apply { addAll(it.description) }
+      onClick = { powerNameSelected = it.name; updatePowers() } }
+    }
+    items[powers.indexOf(powerSelected)].glow
+    fill(items, 2 + (3 - items.size/2), 5, items.size, 1)
   }
 }

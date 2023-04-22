@@ -7,6 +7,13 @@ import fr.not_here.not_tower_defense.config.models.GameConfig
 data class GamesConfigContainer(
     var games: List<GameConfig>? = null
 ) {
+
+    fun check() {
+        if(games == null) throw IllegalArgumentException("Games config cannot be null")
+        if(games!!.isEmpty()) throw IllegalArgumentException("Games config cannot be empty")
+        games?.forEach { it.check() }
+    }
+
     companion object {
         @JvmStatic
         var instance: GamesConfigContainer? = null
@@ -20,7 +27,7 @@ data class GamesConfigContainer(
                 NotTowerDefense.instance.logger.severe("§4Config cannot be loaded")
             } else {
                 NotTowerDefense.instance.logger.info("§bLoaded games config.")
-                configContainerInstance.games?.forEach { it.check() }
+                configContainerInstance.check()
                 instance = configContainerInstance
             }
         }

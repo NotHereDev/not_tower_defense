@@ -1,0 +1,43 @@
+powers:
+  - name: lightningPower
+    displayName: "§6Ligthning Power"
+    description:
+        - "§7Strike all mobs of the game for §65000 §7damage."
+    displayItem: NETHER_STAR
+    lightningPower: 5000
+    cost: 1000
+    cooldown: 12000
+  - name: stun
+    displayName: "§6Stun"
+    description:
+      - "§7Stun all mobs of the game for §610 §7seconds."
+    displayItem: TNT
+    slowDownPower: 1.0
+    slowDownDuration: 200
+    cost: 1000
+    cooldown: 12000
+  - name: heal
+    displayName: "§6Heal"
+    description:
+      - "§7Heal the game 10hp."
+    displayItem: GOLDEN_APPLE
+    healGame: 10
+    cost: 1000
+    cooldown: 12000
+  - name: boostTowers
+    displayName: "§6Boost Towers"
+    description:
+      - "§7Boost all towers damage 2x of the game for §610 §7seconds."
+    displayItem: DIAMOND
+    towerDamageMultiplier: 2.0
+    towerDamageMultiplierDuration: 200
+    cost: 1000
+    cooldown: 12000
+  - name: tpAllStart
+    displayName: "§6Tp All Start"
+    description:
+      - "§7Teleport all mobs to the start."
+    displayItem: ENDER_PEARL
+    tpMobsStart: true
+    cost: 1000
+    cooldown: 12000

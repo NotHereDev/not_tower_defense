@@ -20,3 +20,38 @@ mobs:
     damage: 3
     speed: 0.4
     reward: 30
+  - name: boss
+    displayName: '§4BOSS'
+    entityType: CREEPER
+    health: 2000
+    damage: 3
+    speed: 0.05
+    reward: 3000
+    attacks:
+      - name: DOWNGRADE_TOWER
+        power: 1
+        delay: 200
+        range: 10
+    attackPower: 1
+    towerAbilityImunity: true
+  - name: boss2
+    displayName: '§4BOSS'
+    entityType: CREEPER
+    health: 2000
+    damage: 3
+    speed: 0.05
+    reward: 3000
+    attacks:
+      - name: STUN_TOWER
+        power: 1
+        duration: 100
+        delay: 200
+        range: 10
+      - name: POWER_DOWN_TOWER
+        power: 1
+        duration: 100
+        delay: 200
+        range: 10
+    attackPower: 1
+    powerDuration: 100
+    towerAbilityImunity: true

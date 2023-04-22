@@ -3,6 +3,7 @@ package fr.not_here.not_tower_defense.commands
 import fr.not_here.not_tower_defense.NotTowerDefense
 import fr.not_here.not_tower_defense.classes.*
 import fr.not_here.not_tower_defense.config.containers.GamesConfigContainer
+import fr.not_here.not_tower_defense.config.containers.PowersConfigContainer
 import fr.not_here.not_tower_defense.config.models.GameConfig
 import fr.not_here.not_tower_defense.managers.GameManager
 import org.bukkit.command.Command
@@ -21,7 +22,7 @@ class RunCommand : CommandExecutor {
 
     val name = args.getOrNull(0) ?: GamesConfigContainer.instance?.games?.firstOrNull()?.name ?: return false
 
-    GameManager.startOrRestartGame(name, sender, true)
+    GameManager.startOrRestartGame(sender, PowersConfigContainer.instance!!.powers!!.first(), true)
 
     return true
   }

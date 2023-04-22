@@ -5,6 +5,10 @@ import fr.not_here.not_tower_defense.classes.Game
 import fr.not_here.not_tower_defense.classes.GameTower
 import fr.not_here.not_tower_defense.classes.GameWaveEntity
 import fr.not_here.not_tower_defense.config.containers.GamesConfigContainer
+import fr.not_here.not_tower_defense.config.containers.GlobalConfigContainer
+import fr.not_here.not_tower_defense.config.models.GameConfig
+import fr.not_here.not_tower_defense.config.models.GamePowerConfig
+import jdk.nashorn.internal.objects.Global
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 
@@ -30,16 +34,21 @@ object GameManager {
     return games.find { it.gameConfig.name == name }
   }
 
-  fun startGame(name: String, player: Player, sendMessages: Boolean = false) {
+  fun getGameConfigFromWorldName(player: Player): GameConfig {
+    val worldName = player.location.world.name
+    val gameName = GlobalConfigContainer.instance!!.worldGameConfig[worldName]
+      ?: return GamesConfigContainer.instance!!.games!!.first()
+    return GamesConfigContainer.instance!!.games!!.find { it.name == gameName }!!
+  }
+
+  fun startGame(player: Player, power: GamePowerConfig, sendMessages: Boolean = false) {
     if(games.any { it.players.contains(player) }){
       if(sendMessages) player.sendMessage("You are already in a game, type /stop to stop it")
       return
     }
-    if (GamesConfigContainer.instance!!.games!!.any { it.name == name }) {
-      games += Game(GamesConfigContainer.instance!!.games!!.find { it.name == name }!!, mutableListOf(player))
-      games.last().run()
-      if(sendMessages) player.sendMessage("Game started")
-    }
+    games += Game(getGameConfigFromWorldName(player), mutableListOf(player), player.world, power)
+    games.last().run()
+    if(sendMessages) player.sendMessage("Game started")
   }
 
   fun getGame(player: Player, sendMessages: Boolean): Game? {
@@ -57,20 +66,17 @@ object GameManager {
     if(sendMessages) player.sendMessage("Game stopped")
   }
 
-  fun restartGame(player: Player, sendMessages: Boolean = false) {
-    val game = getGame(player, sendMessages) ?: return
-    game.stop()
-    games.remove(game)
-    games += Game(game.gameConfig, mutableListOf(player))
-    if(sendMessages) player.sendMessage("Game restarted")
+  fun restartGame(player: Player, power: GamePowerConfig, sendMessages: Boolean = false) {
+    stopGame(player, sendMessages)
+    startGame(player, power, sendMessages)
   }
 
-  fun startOrRestartGame(name: String, player: Player, sendMessages: Boolean = false) {
+  fun startOrRestartGame(player: Player, power: GamePowerConfig, sendMessages: Boolean = false) {
     if(games.any { it.players.contains(player) }){
-      restartGame(player, sendMessages)
+      restartGame(player, power, sendMessages)
       return
     }
 
-    startGame(name, player, sendMessages)
+    startGame(player, power, sendMessages)
   }
 }

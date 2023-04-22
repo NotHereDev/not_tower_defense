@@ -1,15 +1,28 @@
 package fr.not_here.not_tower_defense.classes
 
+import fr.not_here.not_tower_defense.config.containers.GlobalConfigContainer
 import fr.not_here.not_tower_defense.config.models.GameMobConfig
+import fr.not_here.not_tower_defense.enums.MobAttack
+import org.bukkit.Particle
 import org.bukkit.World
 import org.bukkit.attribute.Attribute
 import org.bukkit.entity.Entity
 import org.bukkit.entity.LivingEntity
+import org.bukkit.util.Vector
+import kotlin.math.roundToInt
 
 class GameWaveEntity (val config: GameMobConfig, val relatedGame: Game, strengthMultiplier: Double = 1.0) {
   var step: Int = 0
   val entity: Entity
   private var hasBeenOrientated: Boolean = false
+  var slowDownTimer: Int = 0
+  var slowDownPower: Double = 0.0
+
+  val slowDown: Double get() {
+    if(slowDownTimer <= 0) return 0.0
+    slowDownTimer --
+    return slowDownPower
+  }
 
   val position: Position
     get() = Position(entity.location.blockX.toDouble(), entity.location.blockY.toDouble(), entity.location.blockZ.toDouble())
@@ -31,6 +44,12 @@ class GameWaveEntity (val config: GameMobConfig, val relatedGame: Game, strength
       entity.isCustomNameVisible = true
     }
     entity.customName = config.name + "[${config.health * strengthMultiplier} / ${config.health * strengthMultiplier}]"
+    if(entity is LivingEntity){
+      entity.customName = GlobalConfigContainer.instance!!.waveEntityNamePattern
+        .replace("{mobName}", config.name)
+        .replace("{health}", entity.health.toInt().toString())
+        .replace("{maxHealth}", entity.getAttribute(Attribute.GENERIC_MAX_HEALTH)?.baseValue?.roundToInt().toString())
+    }
   }
 
   fun tpBackToSpawn(){
@@ -48,7 +67,10 @@ class GameWaveEntity (val config: GameMobConfig, val relatedGame: Game, strength
   }
 
   fun move(){
-    if(targetIsEnd && isInZone(targetZone)) return entity.remove()
+    if(targetIsEnd && isInZone(targetZone)) {
+      relatedGame.damageGameHealth(config.damage)
+      return entity.remove()
+    }
     if(!hasBeenOrientated) {
       orientate(targetZone)
       hasBeenOrientated = true
@@ -57,8 +79,31 @@ class GameWaveEntity (val config: GameMobConfig, val relatedGame: Game, strength
       step++
       hasBeenOrientated = false
     }
-    val velocity = position.pullVelocity(targetPosition, config.speed)
-    entity.velocity = velocity
+    if(slowDown > 0.0) {
+      Particles.disc(entity.location, Particle.REDSTONE, 10, 0x333333, 1.0)
+      entity.velocity = position.pullVelocity(targetPosition, config.speed).multiply(1 - slowDown)
+    } else {
+      entity.velocity = position.pullVelocity(targetPosition, config.speed)
+    }
+
+    for (attack in config.attacks) {
+      if(entity.ticksLived % attack.delay != 0) continue
+      val targetTower = entity.getNearbyEntities(attack.range, attack.range, attack.range)
+        .filter { relatedGame.getTowers().map { t->t.entity }.contains(it) }
+        .minByOrNull { it.location.distance(entity.location) } ?: continue
+      when(attack.attackEnum){
+        MobAttack.DOWNGRADE_TOWER -> {
+          relatedGame.getTowerFromEntity(targetTower)?.downgradeTimes(attack.power.toInt())
+        }
+        MobAttack.POWER_DOWN_TOWER -> {
+          relatedGame.getTowerFromEntity(targetTower)?.apply { powerDownTimer = attack.duration.toInt(); powerDownPower = attack.power }
+        }
+        MobAttack.STUN_TOWER -> {
+          relatedGame.getTowerFromEntity(targetTower)?.stunTimer = attack.duration.toInt()
+        }
+      }
+      Particles.rayCast(entity.location, targetTower.location, Particle.REDSTONE, 20, 0x333333)
+    }
   }
 
   fun orientate(targetZone: Zone){

@@ -3,6 +3,7 @@ package fr.not_here.not_tower_defense.menu.select_tower
 import fr.not_here.not_tower_defense.NotTowerDefense
 import fr.not_here.not_tower_defense.classes.Game
 import fr.not_here.not_tower_defense.classes.Position
+import fr.not_here.not_tower_defense.config.containers.GlobalConfigContainer
 import fr.not_here.not_tower_defense.config.models.GameTowerConfig
 import fr.not_here.not_tower_defense.extensions.addAll
 import fr.not_here.not_tower_defense.extensions.fill
@@ -33,7 +34,15 @@ class SelectTowerMenuHolder(val player: Player, val game: Game, val position: Po
 
   override fun onOpen(){
     fill(MenuItem(Material.STAINED_GLASS_PANE, 1, 15.toShort()))
-    val items = towers.map { MenuItem(it.displayItemEnum, name=it.displayName).apply { onClick = { selectTower(it) }; lore = mutableListOf("Cost: ${it.levelCosts[0]}").apply { addAll(it.description) } } }
+    val items = towers.map {
+      MenuItem(it.displayItemEnum, name=it.displayName)
+        .apply {
+          onClick = { selectTower(it) };
+          lore = mutableListOf(
+            GlobalConfigContainer.instance!!.costPattern.replace("{cost}",
+              it.levelCosts[0].toString())).apply { addAll(it.description) }
+        }
+    }
     if(items.size % 2 == 0) {
       fill(items.subList(0, items.size/2), 2 + (3-items.size/2),2,(3-items.size/2),1)
       fill(items.subList(items.size/2, items.size), 6,2,(3-items.size/2),1)

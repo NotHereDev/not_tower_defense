@@ -34,7 +34,13 @@ class EditTowerMenuHolder(val player: Player, val gameTower: GameTower): CustomM
 
   fun getDisplayItemForLevel(level: Int, cost: Int?, levelCount: Int): MenuItem{
     val item = GlobalConfigContainer.instance!!.towerLevelDisplayItems.takeLast(levelCount).getOrNull(level-1) ?: Material.BARRIER.name
-    return MenuItem(Material.getMaterial(item), name="Level ${level}").apply { lore = mutableListOf("Cost: ${cost ?: "--"}"); onClick = { onTryUpgradeTower(level) }; if(cost == null) glow; }
+    return MenuItem(
+      Material.getMaterial(item),
+      name=GlobalConfigContainer.instance!!.levePattern.replace("{level}", level.toString())
+    ).apply {
+      lore = mutableListOf(GlobalConfigContainer.instance!!.costPattern.replace("{cost}", cost?.toString() ?: "--"));
+      onClick = { onTryUpgradeTower(level) }; if(cost == null) glow;
+    }
   }
 
   override fun onOpen(){

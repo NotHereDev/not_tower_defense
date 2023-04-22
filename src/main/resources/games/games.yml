@@ -2,6 +2,8 @@ games:
   - name: game
     displayName: '§6Game'
     startingMoney: 1000
+    health: 100
+    powers: [lightningPower, stun, heal, boostTowers, tpAllStart]
     waitingRoom:
       from:
         x: -241
@@ -93,6 +95,22 @@ games:
     towerOnBlockType: GOLD_BLOCK
     waveChangeTimeout: 100
     waves:
+      - endReward: 9999
+        steps:
+          - mobName: boss
+            amount: 1
+            cooldown: 5
+            timeout: 50
+            strengthMultiplier: 1
+            spawnWithPrevious: false
+      - endReward: 9999
+        steps:
+          - mobName: boss2
+            amount: 1
+            cooldown: 5
+            timeout: 50
+            strengthMultiplier: 1
+            spawnWithPrevious: false
       - endReward: 100
         steps:
           - mobName: zombie
