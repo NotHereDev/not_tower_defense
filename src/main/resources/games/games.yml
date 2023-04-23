@@ -19,6 +19,20 @@ games:
     waveChangeTimeout: 100
     #how much arena could be launched, normally this will be your arena count on map
     maxArenaCount: 20
+    #will run all given commands for each player if the game is won
+    runCommandsOnWinForEachPlayers:
+      - 'eco give {player} 1000'
+    #will send all messages for each player if the game is won
+    sendMessagesOnWinForEachPlayers:
+      - '§aYou won the game!'
+      - '§aYou were given §61000$!'
+    #will run all given commands for each player if the game is lost
+    runCommandsOnLooseForEachPlayers:
+      - 'eco give {player} 10'
+    #will send all messages for each player if the game is lost
+    sendMessagesOnLooseForEachPlayers:
+      - '&cYou lost the game!'
+      - '§aYou were given §610$!'
     #used to know where to place arena for multiple game
     arenaOffset:
       x: 1000

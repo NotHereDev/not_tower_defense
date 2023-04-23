@@ -104,6 +104,12 @@ data class Game(
     health -= amount
     if(health <= 0) {
       players.forEach { player ->
+        gameConfig.runCommandsOnLooseForEachPlayers.forEach {
+          Bukkit.dispatchCommand(Bukkit.getConsoleSender(), it.with("player" to player.name))
+        }
+        gameConfig.sendMessagesOnLooseForEachPlayers.forEach {
+          player.sendMessage(it)
+        }
         player.sendTitle(
           GlobalConfigContainer.instance!!.looseTitle,
           GlobalConfigContainer.instance!!.looseSubtitle.with("waveNumber" to currentWaveIndex),
@@ -218,6 +224,12 @@ data class Game(
         waveEntities.removeIf { mob -> mob.entity.isDead || !mob.entity.isValid }
         if(isGameEnded) {
           players.forEach { player ->
+            gameConfig.runCommandsOnWinForEachPlayers.forEach {
+              Bukkit.dispatchCommand(Bukkit.getConsoleSender(), it.with("player" to player.name))
+            }
+            gameConfig.sendMessagesOnWinForEachPlayers.forEach {
+              player.sendMessage(it)
+            }
             player.sendTitle(
               GlobalConfigContainer.instance!!.winTitle,
               GlobalConfigContainer.instance!!.winSubtitle,

@@ -30,6 +30,10 @@ data class GameConfig(
     var powers: List<String> = listOf(),
     var arenaOffset: Position = Position(0.0, 0.0, 0.0),
     var maxArenaCount: Int = 20,
+    var runCommandsOnWinForEachPlayers: List<String> = listOf(),
+    var sendMessagesOnWinForEachPlayers: List<String> = listOf(),
+    var runCommandsOnLooseForEachPlayers: List<String> = listOf(),
+    var sendMessagesOnLooseForEachPlayers: List<String> = listOf(),
 ) {
 
     val towers: List<GameTowerConfig> get() = TowersConfigContainer.instance!!.towers!!.filter { it.name in towerNames }
