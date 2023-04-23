@@ -42,4 +42,10 @@ class EntityDamageListener: Listener {
       if (event.cause == it) event.isCancelled = true
     }
   }
+
+  @EventHandler
+  fun onFallDamage(event: EntityDamageEvent) {
+    if (!GameManager.isWaveEntity(event.entity) && !GameManager.isTowerEntity(event.entity) && !(event.entity is Player && GameManager.isPlayerInGame(event.entity as Player))) return
+    if (event.cause == EntityDamageEvent.DamageCause.FALL) event.isCancelled = true
+  }
 }
