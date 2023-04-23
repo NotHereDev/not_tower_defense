@@ -1,15 +1,30 @@
 games:
+    #name of the game, i's used as a key, so it must be unique, if not, the first one will be used
   - name: game
+    #display name of the game, on uis, and others
     displayName: '§6Game'
+    #money given to every player who join the game, when he quit, and rejoin, he will not get this money again
     startingMoney: 10000
+    #percentage of money that will be given to player when he sell a tower
     towerSellPercentage: 0.75
+    #health of the game, mob's damage will damage this health
     health: 100
+    #name of powers that can be used in this game (from powers.yml)
     powers: [lightningPower, stun, heal, boostTowers, tpAllStart]
+    #name of the tower that can be used in this game (from towers.yml)
+    towerNames: [ray_tower, bomber, mage, supermob, ender]
+    #block type that will be used to build towers, these blocks need to be on game room!
+    towerOnBlockType: GOLD_BLOCK
+    #timer between waves, (not a starting timer, for this behavior use waves.[].timeout)
+    waveChangeTimeout: 100
+    #how much arena could be launched, normally this will be your arena count on map
+    maxArenaCount: 20
+    #used to know where to place arena for multiple game
     arenaOffset:
       x: 1000
       y: 0
       z: 0
-    maxArenaCount: 20
+    #this is the room where players will wait for the game to start (not actually used yet)
     waitingRoom:
       from:
         x: -241
@@ -24,6 +39,7 @@ games:
       x: -242
       y: 92
       z: 143
+    #this is the room where the game will be played
     gameRoom:
       from:
         x: -244
@@ -33,11 +49,13 @@ games:
         x: -185
         y: 94
         z: 180
-    #facultative value, if not set, position will be set to the center bottom of the room
+    #facultative value, if not set, position will be set to the center
+    #bottom of the room, players will be teleported here when the game start
     gameRoomSpawn:
       x: -231
       y: 92
       z: 179
+    #this is the room where mobs will spawn
     startRoom:
       from:
         x: -229
@@ -47,6 +65,7 @@ games:
         x: -231
         y: 93
         z: 178
+    #this is the room where mobs will despawn and their damage will be applied to the game health
     endRoom:
       from:
         x: -241
@@ -56,6 +75,7 @@ games:
         x: -243
         y: 93
         z: 144
+    #mobs spawned will follow this path, mobs will be spawned at startRoom, and will follow this path, to reach endRoom
     pathSteps:
       - from:
           x: -208
@@ -97,19 +117,29 @@ games:
           x: -221
           y: 92
           z: 144
-    towerNames: [ray_tower, bomber, mage, supermob, ender]
-    towerOnBlockType: GOLD_BLOCK
-    waveChangeTimeout: 100
+    #these are the waves, each wave will be played one after the other,
+    #when a wave is finished, the next one will start after waveChangeTimeout and its own timeout
     waves:
+        #reward will be given to players (equaly) when the wave is finished
       - endReward: 100
+        #timeout that the wave will wait before starting
         timeout: 100
+        #steps of the wave, each step will be played one after the other,
+        #spawnWithPrev will be used to know if the next step can be played with the previous one
         steps:
+            #mob name, must be a valid mob name (from mobs.yml)
           - mobName: zombie
+            #amount of mob to spawn
             amount: 10
+            #cooldown between each mob spawn
             cooldown: 5
+            #timeout before the step start (will block next step even if spawnWithPrev is true)
             timeout: 50
+            #strength multiplier of the mob, will be used to calculate mob health
             strengthMultiplier: 1
+            #can this step be played with the previous one, if the step is the first one, this value will be ignored
             canSpawnWithPrev: false
+            # ... and so on
           - mobName: skeleton
             amount: 50
             cooldown: 2
@@ -121,6 +151,7 @@ games:
             timeout: 50
             strengthMultiplier: 2
             canSpawnWithPrev: false
+        # ... and so on
       - endReward: 100
         steps:
           - mobName: zombie

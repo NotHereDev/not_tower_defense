@@ -1,3 +1,19 @@
+# Here you can configure the powers that can be used in the game
+# You can add as many powers as you want, but you must follow the format below:
+# name: the name of the power, must be unique, if not, the first mob with the same name will be used
+# displayName: the display name of the power on menus or item in game
+# description: the description of the power, you can add as many lines as you want, will ne the lore of the menu item or item in game below Cost
+# displayItem: the display item of the power on menus or item in game, must be a valid material name : [ https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html ]
+# lightningPower: will cause a lightning strike on all mobs of the game and deals given damage to them
+# slowDownPower: will slow down all mobs of the game by the given power (0.0-1.0 percentage)
+# slowDownDuration: the duration of the slow down power, must be filled with slowDownPower
+# towerDamageMultiplier: will boost the damage of all towers by the given multiplier
+# towerDamageMultiplierDuration: the duration of the tower damage multiplier power, must be filled with towerDamageMultiplier
+# tpMobsBack: will cause all mobs to teleport back to their last path checkpoint
+# tpMobsStart: will cause all mobs to teleport to the start of the path
+# healGame: will heal the game by the given amount of hp
+# cost: the cost of heroPower of the power
+# cooldown: the cooldown of the power, scoped in game, synchronized with all players in the game
 powers:
   - name: lightningPower
     displayName: "§6Ligthning Power"

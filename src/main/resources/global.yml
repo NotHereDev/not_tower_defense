@@ -2,40 +2,62 @@
 waveEntityNamePattern: "{mobName} §r§8[§3{health}§f/§3{maxHealth}§8]"
 towerLevelDisplayItems: [COBBLESTONE, STONE, COAL_BLOCK, IRON_BLOCK, GOLD_BLOCK, DIAMOND_BLOCK, EMERALD_BLOCK]
 
+# color of the boss bar displaying wave progress, for valid colors see https://hub.spigotmc.org/javadocs/spigot/org/bukkit/boss/BarColor.html
 waveBossBarColor: GREEN
+# title of the boss bar displaying wave progress
 # valid variables are {waveNumber}, {totalWaveNumber}, {waveProgress}, {mobsLeft}, {heroPower} and {money}
 waveBossBarTitle: "§a§lWave {waveNumber}/{totalWaveNumber} §r| §6§lMoney: {money} §r| §5§lHero Power: {heroPower} §r| §b§lProgress: §a{waveProgress}% | §4§lMobs left: {mobsLeft}"
 
+# color of the boss bar displaying game health, for valid colors see https://hub.spigotmc.org/javadocs/spigot/org/bukkit/boss/BarColor.html
 healthBossBarColor: RED
+# title of the boss bar displaying game health
 # valid variables are {health} and {maxHealth}
 healthBossBarTitle: "§c§lHealth: §4{health}§f/§4{maxHealth}"
 
+# this text will be displayed on top lore of menu items used to buy towers, and on power item to display hero power cost
 # valid variables are {cost}
 costPattern: "§6§lCost: §e{cost}"
+# this text will be displayed on top lore of menu items used to buy towers upgrades
 # valid variables are {level}
 levelPattern: "§6§lLevel: §e{level}"
+# this text will be displayed on top lore of menu items used to sell towers
 # valid variables are {price}
 sellPattern: "§6§lSell: §e{sell}"
 
+# this text will be the name of the menu item used go to previous page of player selection, on /td menu
 next: "§a§lNext"
+# this text will be the name of the menu item used go to next page of player selection, on /td menu
 previous: "§c§lPrevious"
+# this text will be the name of the menu item used to start the game, on /td menu
 start: "§a§lDémarrer"
 
+# this text will be a title displayed when the game is won
 winTitle: "§a§lYou win!"
+# this is the subtitle displayed when the game is won below the title
 winSubTitle: "§a§lYou have won the game!"
 
+# this text will be a title displayed when the game is lost
 looseTitle: "§c§lYou loose!"
+# this is the subtitle displayed when the game is lost below the title
 # valid variables are {waveNumber}
 looseSubTitle: "§c§lYou have lost the game at wave §4§l{waveNumber}§c§l!"
 
+# this will associate a game to world names, if a player lauches a game in a world not associated to a
+# game, the first declared game will be launched in the default world, games are declared in games.yml
 worldGameConfig:
   world: game
 
+# this will be the name of the menu item used make towers aim the closest mob
 aimClosestDisplayText: "§a§lAim Closest"
+# this will be the material of the menu item used make towers aim the closest mob (see https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html)
 aimClosestDisplayItem: FISHING_ROD
 
+# this will be the name of the menu item used make towers aim the strongest mob
 aimStrongestDisplayText: "§a§lAim Strongest"
+# this will be the material of the menu item used make towers aim the strongest mob (see https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html)
 aimStrongestDisplayItem: DIAMOND_SWORD
 
+# this will be the name of the menu item used to sell towers
 sellDisplayText: "§a§lSell"
+# this will be the material of the menu item used to sell towers (see https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html)
 sellDisplayItem: GOLD_INGOT

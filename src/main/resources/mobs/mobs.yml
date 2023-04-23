@@ -1,3 +1,20 @@
+# Here you can configure the mobs that can spawn in the every games on games.yml
+# You can add as many mobs as you want, but you must follow the format below
+# name: the name of the mob, must be unique, if not, the first mob with the same name will be used
+# displayName: the name that will be displayed on it
+# entityType: the entity type of the mob, must be a valid entity type, you can find a list of valid entity types here: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html
+# health: the health of the mob, if you want to go above 2048, you must upgrade max health on spigot.yml
+# speed: the speed of the mob, 0.2 is the default speed of a mob, avoid using too high values, it can cause unexpected behaviors
+# damage: the damage of the mob, will be inflicted to the game health when the mob reach the end of the path
+# reward: the reward money of the mob when killed
+# dodgeChance: the chance of the mob to dodge an attack
+# attacks: the attacks of the mob, you can add as many attacks as you want, but you must follow the format below
+#   name: the name of the attack, must be a valid attack name : [ DOWNGRADE_TOWER, POWER_DOWN_TOWER, STUN_TOWER ]
+#   power: the power of the attack, downgrades the tower by 1 level for each power (DOWNGRADE_TOWER), or be ignored (STUN_TOWER), or divides the tower damage by power (POWER_DOWN_TOWER)
+#   delay: the delay between each attack, calculated on mob lifetime, cycles will not stacks
+#   duration: the duration of the attack, ignored if the attack is DOWNGRADE_TOWER
+#   range: the range of the attack
+# towerAbilityImunity: if the mob is immune to tower abilities
 mobs:
   - name: zombie
     displayName: '§6Zombie'
@@ -48,7 +65,7 @@ mobs:
         delay: 200
         range: 10
       - name: POWER_DOWN_TOWER
-        power: 1
+        power: 0.5
         duration: 100
         delay: 200
         range: 10

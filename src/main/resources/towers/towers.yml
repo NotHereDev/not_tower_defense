@@ -1,3 +1,33 @@
+# Here you can configure the towers that can be placed on the game
+# You can add as many towers as you want, but you must follow the format below:
+# name: the name of the tower, must be unique if not, the first tower will be used
+# displayName: the display name of the tower on menus, and entity on world
+# description: the description of the tower, you can add as many lines as you want, will be the lore of the menu item below Cost
+# entityType: the entity type of the tower, must be a valid entity type, for valid entity types, check https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html
+# displayItem: the item that will be used to display the tower on menus, must be a valid material, for valid materials, check https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
+# startLevel: the level of the tower when it is placed, usually 0 every time, this option is not correctly tested, so it may not work as expected, used for lore for example, modifiers that dont downgrade levels to 0...
+# levelCosts: the costs of each level of the tower, must be a list of integers, the first element is the cost of tower spawning, or modifier, the second element is the cost of level 1, and so on
+# levelRanges: the range of each level of the tower, must be a list of doubles, the first element is the range of tower spawned, or modifier, the second element is the range of level 1, and so on
+# levelDamages: the damage of each level of the tower, must be a list of doubles, the first element is the damage of tower spawned, or modifier, the second element is the damage of level 1, and so on
+# levelShotCooldowns: the cooldown of each level of the tower, must be a list of integers, the first element is the cooldown of tower spawned, or modifier, the second element is the cooldown of level 1, and so on
+# towerModifiers: the modifiers of the tower, same possible values as root tower, will be the upgrades of the tower that can be bought when tower is at max level, technically, the upgrade is a new tower, but still can be sold for total amount of money spent on it, and downgraded by attacks
+# towerType: the type of the tower, must be a valid tower type, valid tower types:
+#  - RAY: shoots a ray from the tower to the enemy, if the enemy is in range, it will be damaged
+#  - AOE: shoots a ray from the tower to the enemy, if the enemy is in range, it will be damaged, and all enemies in aoe range will be damaged too, with particle effect
+#  - EXPLOSION: shoots a ray from the tower to the enemy, if the enemy is in range, it will be damaged, and all enemies in aoe range will be damaged too, with explosion effect
+#  - SPARK: shoots a ray from the tower to the enemy, if the enemy is in range, it will be damaged, will follow every next enemy in range of each other for a maximum defined in aoeRange, adding damage to each enemy and a particle effect
+# aoeRange: the range of the aoe attacks, only used if towerType is AOE, EXPLOSION or SPARK
+# particleType: the particle type of the tower, must be a valid particle type, for valid particle types, check https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Particle.html
+# particleColor: the color of the particle, must be a valid color in hex format like 0xFFFFFF
+# tpBackChance: the chance of the tower teleporting damaged enemies back to their last path checkpoint
+# tpStartChance: the chance of the tower teleporting damaged enemies to the start of the path
+# slowDownChance: the chance of the tower slowing down damaged enemies
+# slowDownDuration: the duration of the slow down effect
+# slowDownPower: the power of the slow down effect (0.0 - 1.0 percentage, 1 will make the enemy stop (stun))
+# damageUpgradeStack: this will multiply the damage dealt to the enemy by this value every time the tower damages it, so if the tower damages the enemy 3 times, the damage will be damage * damageUpgradeStack * damageUpgradeStack *
+# maxDamageUpgradeStack: the maximum value of the bonus applied by damageUpgradeStack, to prevent infinite damage on bosses
+# fireTicksInflicted: the amount of fire ticks inflicted to the enemy, if 0, no fire ticks will be inflicted
+# heroPowerEarnPerTick: the amount of hero power earned per tick, if 0, no hero power will be earned, this will be the only way to earn hero power
 towers:
   - name: ray_tower
     displayName: '§6Ray Tower'

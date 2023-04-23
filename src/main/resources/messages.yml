@@ -1,3 +1,4 @@
+# Here you can configure the all messages sent to players during plugin runtime
 mustBePlayer: "§cYou must be a player to execute this command"
 notInGame: "§cYou are not in a game"
 gameStopped: "§cGame stopped"
