@@ -31,7 +31,7 @@ games:
       - 'eco give {player} 10'
     #will send all messages for each player if the game is lost
     sendMessagesOnLooseForEachPlayers:
-      - '&cYou lost the game!'
+      - '§cYou lost the game!'
       - '§aYou were given §610$!'
     #used to know where to place arena for multiple game
     arenaOffset:
