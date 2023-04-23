@@ -9,8 +9,8 @@ data class MobsConfigContainer(
     var mobs: List<GameMobConfig>? = null
 ) {
     fun check() {
-        if(mobs == null) throw IllegalArgumentException("Mobs config cannot be null")
-        if(mobs!!.isEmpty()) throw IllegalArgumentException("Mobs config cannot be empty")
+        if(mobs == null) NotTowerDefense.instance.logger.severe("§4Mobs config cannot be null")
+        if(mobs!!.isEmpty()) NotTowerDefense.instance.logger.severe("§4Mobs config cannot be empty")
         mobs?.forEach { it.check() }
     }
     companion object {

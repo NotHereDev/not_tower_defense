@@ -44,36 +44,36 @@ data class GameConfig(
             gameRoomSpawn = Position(gameRoom.center.x, gameRoom.center.y, gameRoom.center.z)
         }
         if (towerOnBlockType !in Material.values().map { it.name }) {
-            throw IllegalArgumentException("Invalid towerOnBlockType: $towerOnBlockType, on config path: game.$name")
+            NotTowerDefense.instance.logger.severe("§4Invalid towerOnBlockType: $towerOnBlockType, on config path: game.$name")
         }
         val mobNames = MobsConfigContainer.instance!!.mobs!!.map { it.name }
         for ((i, wave) in waves.withIndex()) {
             for ((j, step) in wave.steps.withIndex()) {
                 if (step.mobName !in mobNames) {
-                    throw IllegalArgumentException("Mob ${step.mobName} is not defined in mobs list (mobs[?].name) on config path: game.$name.waves[$i].steps[$j].mobName, valid mobs are: $mobNames")
+                    NotTowerDefense.instance.logger.severe("§4Mob ${step.mobName} is not defined in mobs list (mobs[?].name) on config path: game.$name.waves[$i].steps[$j].mobName, valid mobs are: $mobNames")
                 }
             }
         }
         if(towerNames.isEmpty()) {
-            throw IllegalArgumentException("No tower defined in game.$name.towerNames")
+            NotTowerDefense.instance.logger.severe("§4No tower defined in game.$name.towerNames")
         }
         val configTowerNames = TowersConfigContainer.instance!!.towers!!.map { it.name }
         towerNames.forEach { towerName ->
             if(towerName !in configTowerNames) {
-                throw IllegalArgumentException("Tower $towerName is not defined in towers list (towers[?].name) on config path: game.$name.towerNames[?], valid towers are: $configTowerNames")
+                NotTowerDefense.instance.logger.severe("§4Tower $towerName is not defined in towers list (towers[?].name) on config path: game.$name.towerNames[?], valid towers are: $configTowerNames")
             }
         }
         if(powers.isEmpty()) {
-            throw IllegalArgumentException("No power defined in game.$name.powers")
+            NotTowerDefense.instance.logger.severe("§4No power defined in game.$name.powers")
         }
         val configPowerNames = PowersConfigContainer.instance!!.powers!!.map { it.name }
         powers.forEach { powerName ->
             if(powerName !in configPowerNames) {
-                throw IllegalArgumentException("Power $powerName is not defined in powers list (powers[?].name) on config path: game.$name.powers[?], valid powers are: $configPowerNames")
+                NotTowerDefense.instance.logger.severe("§4Power $powerName is not defined in powers list (powers[?].name) on config path: game.$name.powers[?], valid powers are: $configPowerNames")
             }
         }
         if (towerSellPercentage < 0.0 || towerSellPercentage > 1.0) {
-            throw IllegalArgumentException("Invalid towerSellPercentage: $towerSellPercentage, on config path: game.$name, must be between 0.0 and 1.0")
+            NotTowerDefense.instance.logger.severe("§4Invalid towerSellPercentage: $towerSellPercentage, on config path: game.$name, must be between 0.0 and 1.0")
         }
     }
 

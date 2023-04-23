@@ -1,5 +1,6 @@
 package fr.not_here.not_tower_defense.config.models
 
+import fr.not_here.not_tower_defense.NotTowerDefense
 import fr.not_here.not_tower_defense.enums.TowerType
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -48,42 +49,42 @@ data class GameTowerConfig(
 
   fun check() {
     if(levelCosts.size != levelRanges.size || levelCosts.size != levelDamages.size || levelCosts.size != levelShotCooldowns.size)
-      throw IllegalArgumentException("All levelCosts, levelRange, levelDamage and levelShotCooldown must have the same size to define max upgradable level of tower $name")
+      NotTowerDefense.instance.logger.severe("§4All levelCosts, levelRange, levelDamage and levelShotCooldown must have the same size to define max upgradable level of tower $name")
     if(entityType !in EntityType.values().map { it.name }) {
-      throw IllegalArgumentException("Invalid entityType $entityType, on config path: towers[?].entityType, for tower $name, valid values: ${EntityType.values().map { it.name }}")
+      NotTowerDefense.instance.logger.severe("§4Invalid entityType $entityType, on config path: towers[?].entityType, for tower $name, valid values: ${EntityType.values().map { it.name }}")
     }
     if(particleType !in Particle.values().map { it.name }) {
-      throw IllegalArgumentException("Invalid particleType $particleType, on config path: towers[?].particleType, for tower $name, valid values: ${Particle.values().map { it.name }}")
+      NotTowerDefense.instance.logger.severe("§4Invalid particleType $particleType, on config path: towers[?].particleType, for tower $name, valid values: ${Particle.values().map { it.name }}")
     }
     if(towerType !in TowerType.values().map { it.name }) {
-      throw IllegalArgumentException("Invalid towerType $towerType, on config path: towers[?].towerType, for tower $name, valid values: ${TowerType.values().map { it.name }}")
+      NotTowerDefense.instance.logger.severe("§4Invalid towerType $towerType, on config path: towers[?].towerType, for tower $name, valid values: ${TowerType.values().map { it.name }}")
     }
     if (particleColor !in 0..0xFFFFFF) {
-      throw IllegalArgumentException("Invalid particleColor $particleColor, on config path: towers[?].particleColor, for tower $name, use color, ex: 0xFFFFFF")
+      NotTowerDefense.instance.logger.severe("§4Invalid particleColor $particleColor, on config path: towers[?].particleColor, for tower $name, use color, ex: 0xFFFFFF")
     }
     if(tpBackChance < 0.0 || tpBackChance > 1.0) {
-      throw IllegalArgumentException("Invalid tpBackChance $tpBackChance, on config path: towers[?].tpBackChance, for tower $name, must be between 0.0 and 1.0")
+      NotTowerDefense.instance.logger.severe("§4Invalid tpBackChance $tpBackChance, on config path: towers[?].tpBackChance, for tower $name, must be between 0.0 and 1.0")
     }
     if(tpStartChance < 0.0 || tpStartChance > 1.0) {
-      throw IllegalArgumentException("Invalid tpStartChance $tpStartChance, on config path: towers[?].tpStartChance, for tower $name, must be between 0.0 and 1.0")
+      NotTowerDefense.instance.logger.severe("§4Invalid tpStartChance $tpStartChance, on config path: towers[?].tpStartChance, for tower $name, must be between 0.0 and 1.0")
     }
     if(displayItem !in Material.values().map { it.name }) {
-      throw IllegalArgumentException("Invalid displayItem $displayItem, on config path: towers[?].displayItem, for tower $name, valid values: ${Material.values().map { it.name }}")
+      NotTowerDefense.instance.logger.severe("§4Invalid displayItem $displayItem, on config path: towers[?].displayItem, for tower $name, valid values: ${Material.values().map { it.name }}")
     }
     if(slowDownChance < 0.0 || slowDownChance > 1.0) {
-      throw IllegalArgumentException("Invalid stunChance $slowDownChance, on config path: towers[?].stunChance, for tower $name, must be between 0.0 and 1.0")
+      NotTowerDefense.instance.logger.severe("§4Invalid stunChance $slowDownChance, on config path: towers[?].stunChance, for tower $name, must be between 0.0 and 1.0")
     }
     if(slowDownDuration < 0) {
-      throw IllegalArgumentException("Invalid stunDuration $slowDownDuration, on config path: towers[?].stunDuration, for tower $name, must be greater than 0")
+      NotTowerDefense.instance.logger.severe("§4Invalid stunDuration $slowDownDuration, on config path: towers[?].stunDuration, for tower $name, must be greater than 0")
     }
     if(slowDownPower < 0.0 || slowDownPower > 1.0) {
-      throw IllegalArgumentException("Invalid stunPower $slowDownPower, on config path: towers[?].stunPower, for tower $name, must be between 0.0 and 1.0")
+      NotTowerDefense.instance.logger.severe("§4Invalid stunPower $slowDownPower, on config path: towers[?].stunPower, for tower $name, must be between 0.0 and 1.0")
     }
     if(damageUpgradeStack < 1.0) {
-      throw IllegalArgumentException("Invalid damageUpgradeStack $damageUpgradeStack, on config path: towers[?].damageUpgradeStack, for tower $name, must be greater than 1")
+      NotTowerDefense.instance.logger.severe("§4Invalid damageUpgradeStack $damageUpgradeStack, on config path: towers[?].damageUpgradeStack, for tower $name, must be greater than 1")
     }
     if(maxDamageUpgradeStack < 1.0) {
-      throw IllegalArgumentException("Invalid maxDamageUpgradeStack $maxDamageUpgradeStack, on config path: towers[?].maxDamageUpgradeStack, for tower $name, must be greater than 1")
+      NotTowerDefense.instance.logger.severe("§4Invalid maxDamageUpgradeStack $maxDamageUpgradeStack, on config path: towers[?].maxDamageUpgradeStack, for tower $name, must be greater than 1")
     }
   }
 }

@@ -9,8 +9,8 @@ data class PowersConfigContainer(
     var powers: List<GamePowerConfig>? = null
 ) {
     fun check() {
-        if(powers == null) throw IllegalArgumentException("Powers config cannot be null")
-        if(powers!!.isEmpty()) throw IllegalArgumentException("Powers config cannot be empty")
+        if(powers == null) NotTowerDefense.instance.logger.severe("§4Powers config cannot be null")
+        if(powers!!.isEmpty()) NotTowerDefense.instance.logger.severe("§4Powers config cannot be empty")
         powers?.forEach { it.check() }
     }
     companion object {

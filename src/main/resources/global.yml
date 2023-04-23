@@ -32,7 +32,7 @@ worldGameConfig:
   world: game
 
 aimClosestDisplayText: "§a§lAim Closest"
-aimClosestDisplayItem: FiSHING_ROD
+aimClosestDisplayItem: FISHING_ROD
 
 aimStrongestDisplayText: "§a§lAim Strongest"
 aimStrongestDisplayItem: DIAMOND_SWORD

@@ -59,7 +59,7 @@ data class Game(
   fun addHeroPower(amount: Double) { heroPower += amount }
   fun usePower() {
     if(heroPowerTimer > 0) {
-      players.forEach { it.sendMessage(Message.powerNotCharged("seconds" to heroPowerTimer)) }
+      players.forEach { it.sendMessage(Message.powerNotCharged("seconds" to heroPowerTimer/20)) }
       return
     }
     if(heroPower < selectedPower.cost) {

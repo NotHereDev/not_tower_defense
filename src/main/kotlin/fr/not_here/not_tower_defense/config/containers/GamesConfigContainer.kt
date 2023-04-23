@@ -9,8 +9,8 @@ data class GamesConfigContainer(
 ) {
 
     fun check() {
-        if(games == null) throw IllegalArgumentException("Games config cannot be null")
-        if(games!!.isEmpty()) throw IllegalArgumentException("Games config cannot be empty")
+        if (games == null) NotTowerDefense.instance.logger.severe("§4Games config cannot be null")
+        if (games!!.isEmpty()) NotTowerDefense.instance.logger.severe("§4Games config cannot be empty")
         games?.forEach { it.check() }
     }
 
