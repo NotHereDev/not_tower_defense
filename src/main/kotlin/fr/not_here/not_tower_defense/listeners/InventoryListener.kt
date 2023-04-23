@@ -10,8 +10,10 @@ import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.inventory.InventoryDragEvent
 import org.bukkit.event.inventory.InventoryEvent
 import org.bukkit.event.inventory.InventoryOpenEvent
+import org.bukkit.event.inventory.InventoryType
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.inventory.Inventory
 
 class InventoryListener: Listener {
   @EventHandler
@@ -39,6 +41,7 @@ class InventoryListener: Listener {
   @EventHandler
   fun onOpenEvent(event: InventoryOpenEvent){
     if(event.inventory.holder is CustomMenuHolder) (event.inventory.holder as CustomMenuHolder).onEvent(event)
+    if(event.inventory.type == InventoryType.MERCHANT && event.player is Player && GameManager.isPlayerInGame(event.player as Player)) event.isCancelled = true
   }
 
   @EventHandler

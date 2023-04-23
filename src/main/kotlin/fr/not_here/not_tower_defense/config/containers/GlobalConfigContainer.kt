@@ -29,6 +29,13 @@ data class GlobalConfigContainer(
   var looseSubtitle: String = "§c§lYou have lost the game at wave {waveNumber}!",
 
   var worldGameConfig: Map<String, String> = mapOf("world" to "game"),
+
+  var aimClosestDisplayText: String = "§a§lAim closest",
+  var aimClosestDisplayItem: String = Material.FISHING_ROD.name,
+  var aimStrongestDisplayText: String = "§a§lAim strongest",
+  var aimStrongestDisplayItem: String = Material.DIAMOND_SWORD.name,
+  var sellDisplayText: String = "§a§lSell",
+  var sellDisplayItem: String = Material.GOLD_INGOT.name,
 ) {
 
   val waveBossBarColorEnum: BarColor
@@ -36,6 +43,15 @@ data class GlobalConfigContainer(
 
   val healthBossBarColorEnum: BarColor
     get() = BarColor.valueOf(healthBossBarColor)
+
+  val aimClosestDisplayEnum: Material
+    get() = Material.getMaterial(aimClosestDisplayItem)!!
+
+  val aimStrongestDisplayEnum: Material
+    get() = Material.getMaterial(aimStrongestDisplayItem)!!
+
+  val sellDisplayEnum: Material
+    get() = Material.getMaterial(sellDisplayItem)!!
 
   fun check(){
     for(towerLevelDisplayItem in towerLevelDisplayItems) {
@@ -54,6 +70,15 @@ data class GlobalConfigContainer(
       if(game !in gameNames) {
         NotTowerDefense.instance.logger.severe("§4Invalid game name $game in global config worldGameConfig, valid values are: $gameNames")
       }
+    }
+    if(Material.getMaterial(aimClosestDisplayItem) == null) {
+      NotTowerDefense.instance.logger.severe("§4Invalid material name $aimClosestDisplayItem in global config aimClosestDisplayItem, valid values are: ${Material.values().map { it.name }}")
+    }
+    if(Material.getMaterial(aimStrongestDisplayItem) == null) {
+      NotTowerDefense.instance.logger.severe("§4Invalid material name $aimStrongestDisplayItem in global config aimStrongestDisplayItem, valid values are: ${Material.values().map { it.name }}")
+    }
+    if(Material.getMaterial(sellDisplayItem) == null) {
+      NotTowerDefense.instance.logger.severe("§4Invalid material name $sellDisplayItem in global config sellDisplayItem, valid values are: ${Material.values().map { it.name }}")
     }
   }
 

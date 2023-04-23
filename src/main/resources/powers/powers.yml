@@ -3,7 +3,7 @@ powers:
     displayName: "§6Ligthning Power"
     description:
         - "§7Strike all mobs of the game for §65000 §7damage."
-    displayItem: NETHER_STAR
+    displayItem: BLAZE_ROD
     lightningPower: 5000
     cost: 1000
     cooldown: 12000

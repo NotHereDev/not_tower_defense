@@ -59,7 +59,7 @@ data class Game(
       for (entity in waveEntities) {
         if(entity.entity !is LivingEntity) continue
         entity.entity.world.strikeLightningEffect(entity.entity.location)
-        entity.entity.damage(selectedPower.lightningPower)
+        entity.entity.damage(selectedPower.lightningPower, players.first())
       }
     }
     if(selectedPower.healGame > 0) healGameHealth(selectedPower.healGame.roundToInt())
@@ -165,12 +165,19 @@ data class Game(
   fun spawnOrGetTower(position: Position, towerConf: GameTowerConfig = gameConfig.towers[0], player: Player): GameTower? {
     spawnedTowers.removeIf { tower -> tower.entity.isDead || !tower.entity.isValid }
     var tower = spawnedTowers.find { it.position == position }
-    if(tower != null) return tower
+
+    if(tower != null) {
+      if(tower.owner != player){
+        player.sendMessage("§cThis tower is not yours")
+        return null
+      }
+      return tower
+    }
     if(getPlayerMoney(player) < towerConf.levelCosts[0]) {
       player.sendMessage("You don't have enough money to buy this tower, you need ${towerConf.levelCosts[0]} but you have ${getPlayerMoney(player)}")
       return null
     }
-    tower = GameTower(towerConf, this, position, world, 0)
+    tower = GameTower(towerConf, this, position, world, player, 0)
     spawnedTowers.add(tower)
     addPlayerMoney(player, -towerConf.levelCosts[0])
     return tower
@@ -215,6 +222,7 @@ data class Game(
           GameManager.games.remove(this)
           return@runTaskTimer
         }
+        if(heroPowerTimer > 0) heroPowerTimer--
         summonNextMob()
         moveMobs()
         shotMobs()

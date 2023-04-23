@@ -62,7 +62,7 @@ class StartMenuHolder(val player: Player): CustomMenuHolder() {
     val items = players.map {
       if(playersSelected.contains(it.uniqueId))
         MenuItem(Material.BARRIER, name = it.displayName).apply{ onClick = { selectPlayer(it) } }
-      else MenuItem(player, name = it.displayName).apply{ onClick = { selectPlayer(it) } }
+      else MenuItem(it, name = it.displayName).apply{ onClick = { selectPlayer(it) } }
     }
     fill(items.subList(min(playerPage * 14, items.size), min(playerPage * 14 + 14, items.size)), 2, 2, 7, 2)
 

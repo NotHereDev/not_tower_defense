@@ -1,5 +1,6 @@
 package fr.not_here.not_tower_defense.menu
 
+import fr.not_here.not_tower_defense.NotTowerDefense
 import org.bukkit.Material
 import org.bukkit.OfflinePlayer
 import org.bukkit.SkullType
@@ -7,7 +8,7 @@ import org.bukkit.event.inventory.InventoryEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
 
-class MenuItem(material: Material, count: Int = 1, damage: Short = 0, name: String? = null): ItemStack(material, count, damage) {
+class MenuItem(material: Material, count: Int = 1, damage: Short = 0, name: String? = null, lore: MutableList<String>? = null): ItemStack(material, count, damage) {
   var onClick: (MenuItem.() -> Unit)? = null
 
   val isGlowing: Boolean
@@ -52,15 +53,15 @@ class MenuItem(material: Material, count: Int = 1, damage: Short = 0, name: Stri
   var name = ""
     set(value) {
       if(type == Material.AIR) return
-      itemMeta = itemMeta.apply {
+      itemMeta = itemMeta?.apply {
         displayName = value
       }
       field = value
     }
 
-  var lore: MutableList<String>
+  var lore: MutableList<String>?
     set(value) {
-      itemMeta = itemMeta.apply {
+      itemMeta = itemMeta?.apply {
         lore = value
       }
     }
@@ -70,11 +71,14 @@ class MenuItem(material: Material, count: Int = 1, damage: Short = 0, name: Stri
 
   init {
     this.name = name ?: " "
+    NotTowerDefense.instance.logger.info("Setting lore of item $name to $lore")
+    this.lore = lore
   }
 
-  constructor(offlinePlayer: OfflinePlayer, name: String? = null): this(Material.SKULL_ITEM, 1, SkullType.PLAYER.ordinal.toShort()) {
+  constructor(offlinePlayer: OfflinePlayer, name: String? = null, _lore: MutableList<String>? = null): this(Material.SKULL_ITEM, 1, SkullType.PLAYER.ordinal.toShort()) {
     itemMeta = (itemMeta as SkullMeta).apply {
       owningPlayer = offlinePlayer
+      lore = _lore
     }
     this.name = name ?: offlinePlayer.name
   }

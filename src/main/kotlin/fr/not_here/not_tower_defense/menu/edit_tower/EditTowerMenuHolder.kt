@@ -30,6 +30,7 @@ class EditTowerMenuHolder(val player: Player, val gameTower: GameTower): CustomM
   fun onTryUpgradeTower(level: Int){
     gameTower.tryLevelUp(player, level)
     updateTowerLevelDisplay()
+    updateSellDisplay()
   }
 
   fun getDisplayItemForLevel(level: Int, cost: Int?, levelCount: Int): MenuItem{
@@ -46,10 +47,54 @@ class EditTowerMenuHolder(val player: Player, val gameTower: GameTower): CustomM
   override fun onOpen(){
     fill(MenuItem(Material.STAINED_GLASS_PANE, 1, 15.toShort()))
     updateTowerLevelDisplay()
+    updateTowerAimDisplay()
+    updateTowerModifiersDisplay()
+    updateSellDisplay()
   }
 
   fun updateTowerLevelDisplay(){
     val levels = gameTower.levelCosts
     fill(levels.map { getDisplayItemForLevel(it.key, it.value, levels.size) }, 5 - levels.size/2, 2, levels.size, 1)
+  }
+
+  fun updateTowerAimDisplay(){
+    val levels = gameTower.levelCosts
+    setItem(
+      MenuItem(GlobalConfigContainer.instance!!.aimClosestDisplayEnum, name=GlobalConfigContainer.instance!!.aimClosestDisplayText)
+        .apply { onClick = { gameTower.aimStrongest = false; updateTowerAimDisplay() }; if(!gameTower.aimStrongest) glow },
+      2, 3)
+    setItem(
+      MenuItem(GlobalConfigContainer.instance!!.aimStrongestDisplayEnum, name=GlobalConfigContainer.instance!!.aimStrongestDisplayText)
+        .apply { onClick = { gameTower.aimStrongest = true; updateTowerAimDisplay() }; if(gameTower.aimStrongest) glow },
+      8, 3)
+  }
+
+  fun updateTowerModifiersDisplay(){
+    val mods = gameTower.config.towerModifiers
+    if(mods.isNullOrEmpty()) return
+    fill(
+      mods.map {
+        MenuItem(
+          it.displayItemEnum,
+          name=it.displayName,
+          lore=mutableListOf(GlobalConfigContainer.instance!!.costPattern.replace("{cost}", it.levelCosts[0].toString())).apply { addAll(it.description) }
+        ).apply {
+          onClick = { gameTower.selectModifier(mods.indexOf(it), player); onOpen(); updateSellDisplay() }
+        }
+      },
+      5 - mods.size/2, 4, mods.size, 1
+    )
+  }
+
+  fun updateSellDisplay(){
+    setItem(
+      MenuItem(
+        GlobalConfigContainer.instance!!.sellDisplayEnum,
+        name=GlobalConfigContainer.instance!!.sellDisplayText,
+        lore=mutableListOf(GlobalConfigContainer.instance!!.sellPattern.replace("{sell}", gameTower.getSellPrice().toString()))
+      )
+        .apply { onClick = { gameTower.sell(player); player.closeInventory() } },
+      5, 5
+    )
   }
 }

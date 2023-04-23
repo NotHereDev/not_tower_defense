@@ -13,7 +13,14 @@ import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.roundToInt
 
-class GameTower(private val _config: GameTowerConfig, val relatedGame: Game, val position: Position, val world: World, var level: Int = 0){
+class GameTower(
+  private val _config: GameTowerConfig,
+  val relatedGame: Game,
+  val position: Position,
+  val world: World,
+  var owner: Player,
+  var level: Int = 0,
+){
   lateinit var entity: Entity
   private var target: LivingEntity? = null
   private var lastShot: Int = 0
@@ -22,6 +29,7 @@ class GameTower(private val _config: GameTowerConfig, val relatedGame: Game, val
   var powerDownTimer = 0
   var powerDownPower = 1.0
   val entityDamageTimes = mutableMapOf<UUID, Int>()
+  var aimStrongest: Boolean = false
 
   fun getDamageStackMultiplierBonus(entity: Entity): Double {
     if (config.damageUpgradeStack == 1.0 || config.maxDamageUpgradeStack == 1.0) return 1.0
@@ -79,8 +87,54 @@ class GameTower(private val _config: GameTowerConfig, val relatedGame: Game, val
       return modifier
     }
 
-  fun selectModifier(modifier: Int){
-    if(config.towerModifiers?.getOrNull(modifier) == null) return
+  fun getMoneyPayedForTowerConfig(tconfig: GameTowerConfig, level: Int = Int.MAX_VALUE - 1)
+    = tconfig.levelCosts.take(level + 1).sum()
+
+
+  fun getTotalMoneyPayed(): Int {
+    var cost = 0
+    val mps = modifierPath.toMutableList()
+    if(mps.size > 1) {
+      cost += getMoneyPayedForTowerConfig(_config)
+      mps.removeLast()
+    }
+    if(mps.isNotEmpty()) {
+      var modifier = _config
+      for (mp in modifierPath) {
+        val mod = modifier.towerModifiers?.getOrNull(mp)
+        if(mod == null) break
+        else modifier = mod
+        cost += getMoneyPayedForTowerConfig(modifier)
+      }
+    }
+    cost += getMoneyPayedForTowerConfig(config, level)
+    return cost
+  }
+
+  fun getSellPrice() =
+    (getTotalMoneyPayed() * relatedGame.gameConfig.towerSellPercentage).roundToInt()
+
+  fun sell(player: Player){
+    if(owner != player) {
+      player.sendMessage("§cYou can't sell a tower that is not yours")
+      return
+    }
+    relatedGame.addPlayerMoney(player, getSellPrice())
+    relatedGame.removeTower(this)
+    player.sendMessage("§aYou sold your tower for ${getSellPrice()} money")
+  }
+
+  fun selectModifier(modifier: Int, player: Player){
+    val mod = config.towerModifiers?.getOrNull(modifier) ?: return
+    if(maxLevel > level) {
+      player.sendMessage("§cYou must upgrade your tower to the max level before adding a modifier")
+      return
+    }
+    if(relatedGame.getPlayerMoney(player) < mod.levelCosts[0]) {
+      player.sendMessage("§cYou don't have enough money to buy this modifier")
+      return
+    }
+    relatedGame.addPlayerMoney(player, -mod.levelCosts[0])
     modifierPath.add(modifier)
     entity.customName = config.displayName
     level = config.startLevel
@@ -106,9 +160,10 @@ class GameTower(private val _config: GameTowerConfig, val relatedGame: Game, val
     spawnEntity()
   }
 
-  private fun targetNearestEntity(entities: List<Entity>){
+  private fun targetEntity(entities: List<Entity>){
     if(entity !is LivingEntity) spawnEntity()
-    target = entity.getNearbyEntities(config.levelRanges[level],config.levelRanges[level],config.levelRanges[level]).filterIsInstance<LivingEntity>().filter { entities.contains(it) }.minByOrNull { it.location.distance(entity.location) }
+    target = entity.getNearbyEntities(config.levelRanges[level],config.levelRanges[level],config.levelRanges[level]).filterIsInstance<LivingEntity>().filter { entities.contains(it) }
+      .minByOrNull { if(aimStrongest) -it.health else it.location.distance(entity.location) }
     if(target != null) entity.teleport(entity.location.setDirection(target!!.location.add(0.0,target!!.height/2,0.0).toVector().subtract(entity.location.toVector())))
   }
 
@@ -121,7 +176,7 @@ class GameTower(private val _config: GameTowerConfig, val relatedGame: Game, val
       return
     }
     lastShot = 0
-    targetNearestEntity(entities)
+    targetEntity(entities)
     if(target == null || entity !is LivingEntity) return
     when(config.towerTypeEnum){
       TowerType.RAY -> {

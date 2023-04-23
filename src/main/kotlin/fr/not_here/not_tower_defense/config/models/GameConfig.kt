@@ -24,6 +24,7 @@ data class GameConfig(
     var waveChangeTimeout: Int = 100,
     var waves: List<GameWaveConfig> = listOf(),
     var startingMoney: Int = 100,
+    var towerSellPercentage: Double = 0.75,
     var powers: List<String> = listOf(),
 ) {
 
@@ -66,6 +67,9 @@ data class GameConfig(
             if(powerName !in configPowerNames) {
                 throw IllegalArgumentException("Power $powerName is not defined in powers list (powers[?].name) on config path: game.$name.powers[?], valid powers are: $configPowerNames")
             }
+        }
+        if (towerSellPercentage < 0.0 || towerSellPercentage > 1.0) {
+            throw IllegalArgumentException("Invalid towerSellPercentage: $towerSellPercentage, on config path: game.$name, must be between 0.0 and 1.0")
         }
     }
 }

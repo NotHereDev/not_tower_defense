@@ -20,7 +20,9 @@ class TowerInteractListener: Listener {
     if(!game.gameConfig.gameRoom.contains(Position.fromLocation(block.location))) return
     if(block.type != game.gameConfig.towerOnBlockMaterial) return
     if(game.hasTower(Position.fromLocation(block.location)))
-      return towerInteract(event.player, Position.fromLocation(block.location), game.spawnOrGetTower(Position.fromLocation(block.location), player=event.player)!!)
+      return towerInteract(event.player, Position.fromLocation(block.location),
+        game.spawnOrGetTower(Position.fromLocation(block.location), player=event.player) ?: return
+      )
 
     event.player.openInventory(SelectTowerMenuHolder(event.player, game, Position.fromLocation(block.location)).inventory)
   }

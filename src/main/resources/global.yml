@@ -15,7 +15,7 @@ costPattern: "§6§lCost: §e{cost}"
 #valid variables are {level}
 levelPattern: "§6§lLevel: §e{level}"
 #valid variables are {price}
-sellPattern: "§6§lSell: §e{price}"
+sellPattern: "§6§lSell: §e{sell}"
 
 next: "§a§lNext"
 previous: "§c§lPrevious"
@@ -29,3 +29,12 @@ looseSubTitle: "§c§lYou have lost the game at wave §4§l{waveNumber}§c§l!"
 
 worldGameConfig:
   world: game
+
+aimClosestDisplayText: "§a§lAim Closest"
+aimClosestDisplayItem: FiSHING_ROD
+
+aimStrongestDisplayText: "§a§lAim Strongest"
+aimStrongestDisplayItem: DIAMOND_SWORD
+
+sellDisplayText: "§a§lSell"
+sellDisplayItem: GOLD_INGOT

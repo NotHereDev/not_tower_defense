@@ -4,6 +4,7 @@ import fr.not_here.not_tower_defense.config.containers.GlobalConfigContainer
 import fr.not_here.not_tower_defense.managers.GameManager
 import org.bukkit.attribute.Attribute
 import org.bukkit.entity.LivingEntity
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityDamageByEntityEvent
@@ -36,7 +37,7 @@ class EntityDamageListener: Listener {
 
   @EventHandler
   fun onEntityExplode(event: EntityDamageEvent) {
-    if (!GameManager.isWaveEntity(event.entity) && !GameManager.isTowerEntity(event.entity)) return
+    if (!GameManager.isWaveEntity(event.entity) && !GameManager.isTowerEntity(event.entity) && !(event.entity is Player && GameManager.isPlayerInGame(event.entity as Player))) return
     listOf(EntityDamageEvent.DamageCause.ENTITY_EXPLOSION, EntityDamageEvent.DamageCause.BLOCK_EXPLOSION).forEach {
       if (event.cause == it) event.isCancelled = true
     }

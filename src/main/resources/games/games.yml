@@ -2,6 +2,7 @@ games:
   - name: game
     displayName: '§6Game'
     startingMoney: 1000
+    towerSellPercentage: 0.75
     health: 100
     powers: [lightningPower, stun, heal, boostTowers, tpAllStart]
     waitingRoom:

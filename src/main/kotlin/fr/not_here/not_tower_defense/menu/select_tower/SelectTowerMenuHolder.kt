@@ -35,12 +35,13 @@ class SelectTowerMenuHolder(val player: Player, val game: Game, val position: Po
   override fun onOpen(){
     fill(MenuItem(Material.STAINED_GLASS_PANE, 1, 15.toShort()))
     val items = towers.map {
-      MenuItem(it.displayItemEnum, name=it.displayName)
+      MenuItem(
+        it.displayItemEnum,
+        name=it.displayName,
+        lore=mutableListOf( GlobalConfigContainer.instance!!.costPattern.replace("{cost}", it.levelCosts[0].toString())).apply { addAll(it.description) }
+      )
         .apply {
-          onClick = { selectTower(it) };
-          lore = mutableListOf(
-            GlobalConfigContainer.instance!!.costPattern.replace("{cost}",
-              it.levelCosts[0].toString())).apply { addAll(it.description) }
+          onClick = { selectTower(it) }
         }
     }
     if(items.size % 2 == 0) {
