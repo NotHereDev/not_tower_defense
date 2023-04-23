@@ -10,6 +10,19 @@ data class Position (
   var z: Double = 0.0
 ) {
 
+  operator fun times(other: Position): Position {
+    return Position(x * other.x, y * other.y, z * other.z)
+  }
+
+  operator fun times(other: Double): Position {
+    return Position(x * other, y * other, z * other)
+  }
+
+
+  operator fun plus(other: Position): Position {
+    return Position(x + other.x, y + other.y, z + other.z)
+  }
+
   override operator fun equals(other: Any?): Boolean {
     return other is Position && (x == other.x && y == other.y && z == other.z)
   }
@@ -38,6 +51,14 @@ data class Position (
 
     fun fromVector(vector: Vector): Position {
       return Position(vector.x, vector.y, vector.z)
+    }
+
+    fun randomize(max: Double): Position {
+      return Position(
+        Math.random() * max - max / 2,
+        Math.random() * max - max / 2,
+        Math.random() * max - max / 2
+      )
     }
   }
 }

@@ -16,11 +16,12 @@ data class GlobalConfigContainer(
   var healthBossBarTitle: String = "§c§lHealth: §4{health}§c/§4{maxHealth}",
 
   var costPattern: String = "§6§lCost: §e{cost}",
-  var levePattern: String = "§6§lLevel: §e{level}",
+  var levelPattern: String = "§6§lLevel: §e{level}",
   var sellPattern: String = "§6§lSell: §e{sell}",
 
   var next: String = "§a§lNext",
   var previous: String = "§c§lPrevious",
+  var start: String = "§a§lStart",
 
   var winTitle: String = "§a§lYou win!",
   var winSubtitle: String = "§a§lYou have won the game!",

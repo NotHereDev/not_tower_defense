@@ -3,6 +3,7 @@ package fr.not_here.not_tower_defense.listeners
 import fr.not_here.not_tower_defense.classes.GameTower
 import fr.not_here.not_tower_defense.classes.Position
 import fr.not_here.not_tower_defense.managers.GameManager
+import fr.not_here.not_tower_defense.managers.Message
 import fr.not_here.not_tower_defense.menu.edit_tower.EditTowerMenuHolder
 import fr.not_here.not_tower_defense.menu.select_tower.SelectTowerMenuHolder
 import org.bukkit.entity.Player
@@ -38,6 +39,10 @@ class TowerInteractListener: Listener {
   }
 
   private fun towerInteract(player: Player, position: Position, tower: GameTower){
+    if(tower.owner != player){
+      player.sendMessage(Message.towerNotYours())
+      return
+    }
     player.openInventory(EditTowerMenuHolder(player, tower).inventory)
   }
 }

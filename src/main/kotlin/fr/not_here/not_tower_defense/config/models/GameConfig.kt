@@ -1,11 +1,13 @@
 package fr.not_here.not_tower_defense.config.models
 
+import fr.not_here.not_tower_defense.NotTowerDefense
 import fr.not_here.not_tower_defense.classes.Position
 import fr.not_here.not_tower_defense.classes.Zone
 import fr.not_here.not_tower_defense.config.containers.MobsConfigContainer
 import fr.not_here.not_tower_defense.config.containers.PowersConfigContainer
 import fr.not_here.not_tower_defense.config.containers.TowersConfigContainer
 import org.bukkit.Material
+import java.time.OffsetDateTime
 
 
 data class GameConfig(
@@ -26,6 +28,8 @@ data class GameConfig(
     var startingMoney: Int = 100,
     var towerSellPercentage: Double = 0.75,
     var powers: List<String> = listOf(),
+    var arenaOffset: Position = Position(0.0, 0.0, 0.0),
+    var maxArenaCount: Int = 20,
 ) {
 
     val towers: List<GameTowerConfig> get() = TowersConfigContainer.instance!!.towers!!.filter { it.name in towerNames }
@@ -71,5 +75,15 @@ data class GameConfig(
         if (towerSellPercentage < 0.0 || towerSellPercentage > 1.0) {
             throw IllegalArgumentException("Invalid towerSellPercentage: $towerSellPercentage, on config path: game.$name, must be between 0.0 and 1.0")
         }
+    }
+
+    fun applyOffset(offset: Position) {
+        waitingRoom = waitingRoom.copy() + offset
+        waitingRoomSpawn = waitingRoomSpawn!!.copy() + offset
+        gameRoom = gameRoom.copy() + offset
+        gameRoomSpawn = gameRoomSpawn!!.copy() + offset
+        startRoom = startRoom.copy() + offset
+        endRoom = endRoom.copy() + offset
+        pathSteps = pathSteps.map { it.copy() + offset }
     }
 }

@@ -8,6 +8,7 @@ import fr.not_here.not_tower_defense.config.containers.GlobalConfigContainer
 import fr.not_here.not_tower_defense.config.models.GameTowerConfig
 import fr.not_here.not_tower_defense.extensions.addAll
 import fr.not_here.not_tower_defense.extensions.fill
+import fr.not_here.not_tower_defense.managers.Message
 import fr.not_here.not_tower_defense.menu.CustomMenuHolder
 import fr.not_here.not_tower_defense.menu.MenuItem
 import org.bukkit.Bukkit
@@ -37,7 +38,7 @@ class EditTowerMenuHolder(val player: Player, val gameTower: GameTower): CustomM
     val item = GlobalConfigContainer.instance!!.towerLevelDisplayItems.takeLast(levelCount).getOrNull(level-1) ?: Material.BARRIER.name
     return MenuItem(
       Material.getMaterial(item),
-      name=GlobalConfigContainer.instance!!.levePattern.replace("{level}", level.toString())
+      name=GlobalConfigContainer.instance!!.levelPattern.replace("{level}", level.toString())
     ).apply {
       lore = mutableListOf(GlobalConfigContainer.instance!!.costPattern.replace("{cost}", cost?.toString() ?: "--"));
       onClick = { onTryUpgradeTower(level) }; if(cost == null) glow;
@@ -45,6 +46,11 @@ class EditTowerMenuHolder(val player: Player, val gameTower: GameTower): CustomM
   }
 
   override fun onOpen(){
+    if(gameTower.owner != player){
+      player.sendMessage(Message.towerNotYours())
+      player.closeInventory()
+      return
+    }
     fill(MenuItem(Material.STAINED_GLASS_PANE, 1, 15.toShort()))
     updateTowerLevelDisplay()
     updateTowerAimDisplay()

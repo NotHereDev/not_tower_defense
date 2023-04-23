@@ -4,23 +4,8 @@ main: fr.not_here.not_tower_defense.NotTowerDefense
 
 
 commands:
-  run:
-    description: Run the game
-    aliases: [r]
-    permission: not_tower_defense.run
-    permission-message: You don't have the permission to run the game
-    usage: /run
-    executor: fr.not_here.not_tower_defense.commands.RunCommand
-  stop:
-    description: Stop the game
-    aliases: [s]
-    permission: not_tower_defense.stop
-    permission-message: You don't have the permission to stop the game
-    usage: /stop
-    executor: fr.not_here.not_tower_defense.commands.StopCommand
   td:
-    description: Main command used to run the game
+    description: Main command used to run the game, using /td only will open the ui
     aliases: [towerdefense, nottowerdefense, not_tower_defense]
     permission: not_tower_defense.td
     permission-message: You don't have the permission to run the game
-    usage: /td <start|stop|invite> [players]

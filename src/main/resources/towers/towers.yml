@@ -114,7 +114,7 @@ towers:
   - name: mage
     displayName: '§6Mage'
     displayItem: BLAZE_ROD
-    entityType: VILLAGER
+    entityType: GUARDIAN
     startLevel: 0
     towerType: SPARK
     slowDownChance: 0.1

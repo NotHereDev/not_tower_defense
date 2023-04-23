@@ -71,7 +71,6 @@ class MenuItem(material: Material, count: Int = 1, damage: Short = 0, name: Stri
 
   init {
     this.name = name ?: " "
-    NotTowerDefense.instance.logger.info("Setting lore of item $name to $lore")
     this.lore = lore
   }
 

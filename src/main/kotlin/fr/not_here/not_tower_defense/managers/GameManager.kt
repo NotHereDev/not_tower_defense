@@ -4,6 +4,7 @@ import fr.not_here.not_tower_defense.NotTowerDefense
 import fr.not_here.not_tower_defense.classes.Game
 import fr.not_here.not_tower_defense.classes.GameTower
 import fr.not_here.not_tower_defense.classes.GameWaveEntity
+import fr.not_here.not_tower_defense.classes.Position
 import fr.not_here.not_tower_defense.config.containers.GamesConfigContainer
 import fr.not_here.not_tower_defense.config.containers.GlobalConfigContainer
 import fr.not_here.not_tower_defense.config.models.GameConfig
@@ -34,6 +35,33 @@ object GameManager {
     return games.find { it.gameConfig.name == name }
   }
 
+  fun getRunningGames(name: String): List<Game> {
+    return games.filter { it.gameConfig.name == name }
+  }
+
+  fun countRunningGames(name: String): Int {
+    return getRunningGames(name).size
+  }
+
+  fun findAvailableOffsetsFromGameConfig(gameConfig: GameConfig): List<Position> {
+    val result = mutableListOf<Position>()
+    for(i in 0 until gameConfig.maxArenaCount){
+      val offset = gameConfig.arenaOffset * i.toDouble()
+      if(!games.any { it.gameOffset == offset }){
+        result += offset
+      }
+    }
+    return result
+  }
+
+  fun getOffsetFromGameConfig(gameConfig: GameConfig): Position {
+    return findAvailableOffsetsFromGameConfig(gameConfig).first()
+  }
+
+  fun canStartGame(gameConfig: GameConfig): Boolean{
+    return countRunningGames(gameConfig.name) < gameConfig.maxArenaCount
+  }
+
   fun getGameConfigFromWorldName(player: Player): GameConfig {
     val worldName = player.location.world.name
     val gameName = GlobalConfigContainer.instance!!.worldGameConfig[worldName]
@@ -41,20 +69,24 @@ object GameManager {
     return GamesConfigContainer.instance!!.games!!.find { it.name == gameName }!!
   }
 
-  fun startGame(player: Player, power: GamePowerConfig, sendMessages: Boolean = false) {
+  fun startGame(player: Player, power: GamePowerConfig, sendMessages: Boolean = false, askedPlayers: List<Player> = listOf()) {
     if(games.any { it.players.contains(player) }){
-      if(sendMessages) player.sendMessage("You are already in a game, type /stop to stop it")
+      if(sendMessages) player.sendMessage(Message.gameAlreadyStarted())
       return
     }
-    games += Game(getGameConfigFromWorldName(player), mutableListOf(player), player.world, power)
+    if(!canStartGame(getGameConfigFromWorldName(player))){
+      if(sendMessages) player.sendMessage(Message.tooMuchGameStarted())
+      return
+    }
+    games += Game(getGameConfigFromWorldName(player), mutableListOf(player), player.world, power, getOffsetFromGameConfig(getGameConfigFromWorldName(player)), askedPlayers)
     games.last().run()
-    if(sendMessages) player.sendMessage("Game started")
+    if(sendMessages) player.sendMessage(Message.gameStarted())
   }
 
   fun getGame(player: Player, sendMessages: Boolean): Game? {
     val game = games.find { it.players.contains(player) }
     if(game == null){
-      if(sendMessages) player.sendMessage("You are not in a game")
+      if(sendMessages) player.sendMessage(Message.notInGame())
     }
     return game
   }
@@ -63,7 +95,7 @@ object GameManager {
     val game = getGame(player, sendMessages) ?: return
     game.stop()
     games.remove(game)
-    if(sendMessages) player.sendMessage("Game stopped")
+    if(sendMessages) player.sendMessage(Message.gameStopped())
   }
 
   fun restartGame(player: Player, power: GamePowerConfig, sendMessages: Boolean = false) {

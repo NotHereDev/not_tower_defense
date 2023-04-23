@@ -5,7 +5,9 @@ import fr.not_here.not_tower_defense.config.containers.GlobalConfigContainer
 import fr.not_here.not_tower_defense.config.models.GameConfig
 import fr.not_here.not_tower_defense.config.models.GamePowerConfig
 import fr.not_here.not_tower_defense.config.models.GameTowerConfig
+import fr.not_here.not_tower_defense.extensions.with
 import fr.not_here.not_tower_defense.managers.GameManager
+import fr.not_here.not_tower_defense.managers.Message
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.World
@@ -24,11 +26,22 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 
 data class Game(
-  val gameConfig: GameConfig,
+  val _gameConfig: GameConfig,
   val players: MutableList<Player>,
   val world: World = Bukkit.getWorld("world")!!,
-  val selectedPower: GamePowerConfig
+  val selectedPower: GamePowerConfig,
+  val gameOffset: Position = Position(0.0, 0.0, 0.0),
+  val askedPlayers: List<Player> = listOf()
 ){
+  var gameConfigCache: GameConfig? = null
+
+  val gameConfig: GameConfig get() {
+    if(gameConfigCache == null) {
+      gameConfigCache = _gameConfig.copy()
+      gameConfigCache!!.applyOffset(gameOffset)
+    }
+    return gameConfigCache!!
+  }
   private var lastWaveEndTicksElapsed: Long = 0
   private var currentWaveIndex: Int = 0
   private val waves: List<GameWave> = gameConfig.waves.map { GameWave(it) }
@@ -46,11 +59,11 @@ data class Game(
   fun addHeroPower(amount: Double) { heroPower += amount }
   fun usePower() {
     if(heroPowerTimer > 0) {
-      players.forEach { it.sendMessage("§cCe pouvoir ne s'est pas rechargé, attendez ${(heroPowerTimer/20)}s") }
+      players.forEach { it.sendMessage(Message.powerNotCharged("seconds" to heroPowerTimer)) }
       return
     }
     if(heroPower < selectedPower.cost) {
-      players.forEach { it.sendMessage("§cVous n'avez pas assez de pouvoir de héros pour utiliser ce pouvoir") }
+      players.forEach { it.sendMessage(Message.notEnoughHeroPowerToUsePower("heroPower" to selectedPower.cost)) }
       return
     }
     heroPower -= selectedPower.cost
@@ -93,7 +106,7 @@ data class Game(
       players.forEach { player ->
         player.sendTitle(
           GlobalConfigContainer.instance!!.looseTitle,
-          GlobalConfigContainer.instance!!.looseSubtitle.replace("{waveNumber}", currentWaveIndex.toString()),
+          GlobalConfigContainer.instance!!.looseSubtitle.with("waveNumber" to currentWaveIndex),
           10,
           40,
           10
@@ -117,10 +130,6 @@ data class Game(
   }
   fun addMoneyReward(amount: Int){
     players.forEach { addPlayerMoney(it, amount / players.size) }
-  }
-
-  fun broadcast(message: String) {
-    Bukkit.getOnlinePlayers().forEach { player -> player.sendMessage(message) }
   }
 
   val progress get() = currentWave.steps.sumOf { it.spawned } / currentWave.config.steps.sumOf { it.amount }.toDouble()
@@ -168,13 +177,13 @@ data class Game(
 
     if(tower != null) {
       if(tower.owner != player){
-        player.sendMessage("§cThis tower is not yours")
+        player.sendMessage(Message.towerNotYours())
         return null
       }
       return tower
     }
     if(getPlayerMoney(player) < towerConf.levelCosts[0]) {
-      player.sendMessage("You don't have enough money to buy this tower, you need ${towerConf.levelCosts[0]} but you have ${getPlayerMoney(player)}")
+      player.sendMessage(Message.notEnoughMoneyToBuyTower("money" to towerConf.levelCosts[0], "currentMoney" to getPlayerMoney(player)))
       return null
     }
     tower = GameTower(towerConf, this, position, world, player, 0)
@@ -202,7 +211,6 @@ data class Game(
       player.teleport(gameConfig.gameRoomSpawn!!.toLocation(world).setDirection(gameConfig.gameRoom.centerGround.toVector().subtract(gameConfig.gameRoomSpawn!!.toVector()))
     ) }
     if(!::loop.isInitialized || loop.isCancelled) {
-      broadcast("starting internal game loop")
       world.entities?.filter { it !is Player }?.filter { gameConfig.gameRoom.contains(Position.fromLocation(it.location)) }?.forEach { it.remove() }
       updatePlayerInventories(true)
       loop = Bukkit.getScheduler().runTaskTimer(NotTowerDefense.instance, {
@@ -233,9 +241,15 @@ data class Game(
   }
 
   fun stop() {
-    waveEntities.forEach { mob -> mob.entity.remove() }
+    waveEntities.forEach { mob ->
+      if(mob.entity.isValid && !mob.entity.isDead)
+        mob.entity.remove()
+    }
     waveEntities.clear()
-    spawnedTowers.forEach { tower -> tower.entity.remove() }
+    spawnedTowers.forEach { tower ->
+      if(tower.entity.isValid && !tower.entity.isDead)
+      tower.entity.remove()
+    }
     spawnedTowers.clear()
     Bukkit.getScheduler().cancelTask(loop.taskId)
     if(!::loop.isInitialized && !loop.isCancelled) loop.cancel()
@@ -267,6 +281,7 @@ data class Game(
   }
 
   fun playerJoin(player: Player){
+    if(players.contains(player)) return
     players.add(player)
     playerOriginLocation[player.uniqueId] = player.location.clone()
     player.teleport(gameConfig.gameRoomSpawn!!.toLocation(world))

@@ -1,10 +1,15 @@
 games:
   - name: game
     displayName: '§6Game'
-    startingMoney: 1000
+    startingMoney: 10000
     towerSellPercentage: 0.75
     health: 100
     powers: [lightningPower, stun, heal, boostTowers, tpAllStart]
+    arenaOffset:
+      x: 1000
+      y: 0
+      z: 0
+    maxArenaCount: 20
     waitingRoom:
       from:
         x: -241
@@ -96,14 +101,102 @@ games:
     towerOnBlockType: GOLD_BLOCK
     waveChangeTimeout: 100
     waves:
-      - endReward: 9999
+      - endReward: 100
+        timeout: 100
         steps:
-          - mobName: boss
-            amount: 1
+          - mobName: zombie
+            amount: 10
             cooldown: 5
             timeout: 50
             strengthMultiplier: 1
-            spawnWithPrevious: false
+            canSpawnWithPrev: false
+          - mobName: skeleton
+            amount: 50
+            cooldown: 2
+            strengthMultiplier: 0.5
+            canSpawnWithPrev: true
+          - mobName: creeper
+            amount: 10
+            cooldown: 5
+            timeout: 50
+            strengthMultiplier: 2
+            canSpawnWithPrev: false
+      - endReward: 100
+        steps:
+          - mobName: zombie
+            amount: 10
+            cooldown: 5
+            timeout: 50
+            strengthMultiplier: 2
+            canSpawnWithPrev: false
+          - mobName: skeleton
+            amount: 50
+            cooldown: 2
+            strengthMultiplier: 1
+            canSpawnWithPrev: true
+          - mobName: creeper
+            amount: 10
+            cooldown: 5
+            timeout: 50
+            strengthMultiplier: 2
+            canSpawnWithPrev: false
+      - endReward: 100
+        steps:
+          - mobName: zombie
+            amount: 10
+            cooldown: 5
+            timeout: 50
+            strengthMultiplier: 1
+            canSpawnWithPrev: false
+          - mobName: skeleton
+            amount: 50
+            cooldown: 2
+            strengthMultiplier: 0.5
+            canSpawnWithPrev: true
+          - mobName: creeper
+            amount: 10
+            cooldown: 5
+            timeout: 50
+            strengthMultiplier: 2
+            canSpawnWithPrev: false
+      - endReward: 100
+        steps:
+          - mobName: zombie
+            amount: 10
+            cooldown: 5
+            timeout: 50
+            strengthMultiplier: 1
+            canSpawnWithPrev: false
+          - mobName: skeleton
+            amount: 50
+            cooldown: 2
+            strengthMultiplier: 0.5
+            canSpawnWithPrev: true
+          - mobName: creeper
+            amount: 10
+            cooldown: 5
+            timeout: 50
+            strengthMultiplier: 2
+            canSpawnWithPrev: false
+      - endReward: 100
+        steps:
+          - mobName: zombie
+            amount: 10
+            cooldown: 5
+            timeout: 50
+            strengthMultiplier: 1
+            canSpawnWithPrev: false
+          - mobName: skeleton
+            amount: 50
+            cooldown: 2
+            strengthMultiplier: 0.5
+            canSpawnWithPrev: true
+          - mobName: creeper
+            amount: 10
+            cooldown: 5
+            timeout: 50
+            strengthMultiplier: 2
+            canSpawnWithPrev: false
       - endReward: 9999
         steps:
           - mobName: boss2
@@ -111,104 +204,12 @@ games:
             cooldown: 5
             timeout: 50
             strengthMultiplier: 1
-            spawnWithPrevious: false
-      - endReward: 100
+            canSpawnWithPrev: false
+      - endReward: 9999
         steps:
-          - mobName: zombie
-            amount: 10
+          - mobName: boss
+            amount: 1
             cooldown: 5
             timeout: 50
             strengthMultiplier: 1
-            spawnWithPrevious: false
-          - mobName: skeleton
-            amount: 50
-            cooldown: 2
-            timeout: 50
-            strengthMultiplier: 0.5
-            spawnWithPrevious: true
-          - mobName: creeper
-            amount: 10
-            cooldown: 5
-            timeout: 50
-            strengthMultiplier: 2
-            spawnWithPrevious: false
-      - endReward: 100
-        steps:
-          - mobName: zombie
-            amount: 10
-            cooldown: 5
-            timeout: 50
-            strengthMultiplier: 1
-            spawnWithPrevious: false
-          - mobName: skeleton
-            amount: 50
-            cooldown: 2
-            timeout: 50
-            strengthMultiplier: 0.5
-            spawnWithPrevious: true
-          - mobName: creeper
-            amount: 10
-            cooldown: 5
-            timeout: 50
-            strengthMultiplier: 2
-            spawnWithPrevious: false
-      - endReward: 100
-        steps:
-          - mobName: zombie
-            amount: 10
-            cooldown: 5
-            timeout: 50
-            strengthMultiplier: 1
-            spawnWithPrevious: false
-          - mobName: skeleton
-            amount: 50
-            cooldown: 2
-            timeout: 50
-            strengthMultiplier: 0.5
-            spawnWithPrevious: true
-          - mobName: creeper
-            amount: 10
-            cooldown: 5
-            timeout: 50
-            strengthMultiplier: 2
-            spawnWithPrevious: false
-      - endReward: 100
-        steps:
-          - mobName: zombie
-            amount: 10
-            cooldown: 5
-            timeout: 50
-            strengthMultiplier: 1
-            spawnWithPrevious: false
-          - mobName: skeleton
-            amount: 50
-            cooldown: 2
-            timeout: 50
-            strengthMultiplier: 0.5
-            spawnWithPrevious: true
-          - mobName: creeper
-            amount: 10
-            cooldown: 5
-            timeout: 50
-            strengthMultiplier: 2
-            spawnWithPrevious: false
-      - endReward: 100
-        steps:
-          - mobName: zombie
-            amount: 10
-            cooldown: 5
-            timeout: 50
-            strengthMultiplier: 1
-            spawnWithPrevious: false
-          - mobName: skeleton
-            amount: 50
-            cooldown: 2
-            timeout: 50
-            strengthMultiplier: 0.5
-            spawnWithPrevious: true
-          - mobName: creeper
-            amount: 10
-            cooldown: 5
-            timeout: 50
-            strengthMultiplier: 2
-            spawnWithPrevious: false
+            canSpawnWithPrev: false

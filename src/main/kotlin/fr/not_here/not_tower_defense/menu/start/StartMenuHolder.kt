@@ -8,8 +8,11 @@ import fr.not_here.not_tower_defense.config.models.GamePowerConfig
 import fr.not_here.not_tower_defense.extensions.addAll
 import fr.not_here.not_tower_defense.extensions.glowing
 import fr.not_here.not_tower_defense.managers.GameManager
+import fr.not_here.not_tower_defense.managers.Message
 import fr.not_here.not_tower_defense.menu.CustomMenuHolder
 import fr.not_here.not_tower_defense.menu.MenuItem
+import net.md_5.bungee.api.chat.ClickEvent
+import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -26,6 +29,7 @@ class StartMenuHolder(val player: Player): CustomMenuHolder() {
   private val powers = mutableListOf<GamePowerConfig>().apply { addAll(PowersConfigContainer.instance!!.powers!!) }
   private var powerNameSelected = PowersConfigContainer.instance!!.powers!!.first().name
   private val playersSelected = mutableListOf<UUID>()
+  private val players get() = playersSelected.mapNotNull { Bukkit.getPlayer(it) }
 
   val powerSelected: GamePowerConfig
     get() = powers.first { it.name == powerNameSelected }
@@ -47,7 +51,20 @@ class StartMenuHolder(val player: Player): CustomMenuHolder() {
   }
 
   fun startGame(){
-    GameManager.startOrRestartGame(player, powerSelected, true)
+    val askedPlayers = players
+    for (askedPlayer in askedPlayers) {
+      askedPlayer.sendMessage(Message.gameAsked("player" to player.name))
+      askedPlayer.spigot().sendMessage(
+        TextComponent(Message.accept())
+          .apply {
+            clickEvent = ClickEvent(
+              ClickEvent.Action.RUN_COMMAND,
+              "/td join ${player.name}"
+            )
+          }
+      )
+    }
+    GameManager.startGame(player, powerSelected, true, askedPlayers)
     player.closeInventory()
   }
 
@@ -58,7 +75,7 @@ class StartMenuHolder(val player: Player): CustomMenuHolder() {
   }
 
   private fun updatePlayers(){
-    val players = player.location.world.players.filter { !GameManager.games.map { g -> g.players }.flatten().contains(it) }
+    val players = player.location.world.players.filter { it != player && !GameManager.games.map { g -> g.players }.flatten().contains(it) }
     val items = players.map {
       if(playersSelected.contains(it.uniqueId))
         MenuItem(Material.BARRIER, name = it.displayName).apply{ onClick = { selectPlayer(it) } }

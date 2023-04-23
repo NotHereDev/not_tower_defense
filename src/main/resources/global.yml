@@ -3,28 +3,29 @@ waveEntityNamePattern: "{mobName} §r§8[§3{health}§f/§3{maxHealth}§8]"
 towerLevelDisplayItems: [COBBLESTONE, STONE, COAL_BLOCK, IRON_BLOCK, GOLD_BLOCK, DIAMOND_BLOCK, EMERALD_BLOCK]
 
 waveBossBarColor: GREEN
-#valid variables are {waveNumber}, {totalWaveNumber}, {waveProgress}, {mobsLeft}, {heroPower} and {money}
+# valid variables are {waveNumber}, {totalWaveNumber}, {waveProgress}, {mobsLeft}, {heroPower} and {money}
 waveBossBarTitle: "§a§lWave {waveNumber}/{totalWaveNumber} §r| §6§lMoney: {money} §r| §5§lHero Power: {heroPower} §r| §b§lProgress: §a{waveProgress}% | §4§lMobs left: {mobsLeft}"
 
 healthBossBarColor: RED
-#valid variables are {health} and {maxHealth}
+# valid variables are {health} and {maxHealth}
 healthBossBarTitle: "§c§lHealth: §4{health}§f/§4{maxHealth}"
 
-#valid variables are {cost}
+# valid variables are {cost}
 costPattern: "§6§lCost: §e{cost}"
-#valid variables are {level}
+# valid variables are {level}
 levelPattern: "§6§lLevel: §e{level}"
-#valid variables are {price}
+# valid variables are {price}
 sellPattern: "§6§lSell: §e{sell}"
 
 next: "§a§lNext"
 previous: "§c§lPrevious"
+start: "§a§lDémarrer"
 
 winTitle: "§a§lYou win!"
 winSubTitle: "§a§lYou have won the game!"
 
 looseTitle: "§c§lYou loose!"
-#valid variables are {waveNumber}
+# valid variables are {waveNumber}
 looseSubTitle: "§c§lYou have lost the game at wave §4§l{waveNumber}§c§l!"
 
 worldGameConfig:

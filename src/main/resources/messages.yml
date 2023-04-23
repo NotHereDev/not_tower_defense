@@ -1,0 +1,49 @@
+mustBePlayer: "§cYou must be a player to execute this command"
+notInGame: "§cYou are not in a game"
+gameStopped: "§cGame stopped"
+gameStarted: "§aGame started"
+gameAlreadyStarted: "§cYou are already in a game, type /td stop to stop it"
+tooMuchGameStarted: "§cThere are already too much games running, please wait a bit"
+# valid variables are: {player}
+playerNotFound: "§cPlayer {player} not found"
+# valid variables are: {power}, {powers}
+invalidPower: "§cInvalid power {power}, valid ones are: {powers}"
+# valid variables are: {powers}
+noPowerSpecified: "§cYou must specify a power to start a game, valid powers are: {powers}"
+# valid variables are: {players}
+concurrentGameAsks: "You have been asked to join multiple games, please specify which one you want to join with the name of one of players who asked you: {players}"
+noGameAsk: "§cYou have not been asked to join any game, or the game you have been asked to join does not exist anymore"
+# valid variables are: {player}
+gameAsked: "§aYou have been asked to join a game by {player}, type /td join to join it, or click accept below:"
+accept: "§aAccept"
+commandDoesNotExist: "§cThis command does not exist, type /td help to see the list of commands"
+
+tdHelpHeader: "§bNot Tower Defense help"
+tdHelp: "§b/td - Show the game starting UI"
+tdHelpHelp: "§b/td help §7- Show this help"
+tdStartHelp: "§b/td start <power> [player1] [player2] ... §7- Start a game with the specified power, and ask the specified players to join"
+tdStopHelp: "§b/td stop §7- Stop the game you are in"
+tdJoinHelp: "§b/td join [player] §7- Join a game you have been asked to join, player is required if you have been asked to join multiple games"
+
+# valid variables are: {seconds}
+powerNotCharged: "§cYou cannot use this power, it is not charged yet, please wait {seconds} seconds"
+# valid variables are: {heroPower}
+notEnoughHeroPowerToUsePower: "§cYou cannot use this power, you do not have enough hero power, you need {heroPower} hero power to use this power"
+towerNotYours: "§cThis tower, is not yours"
+# valid variables are: {money}, {currentMoney}
+notEnoughMoneyToBuyTower: "§cYou cannot buy this tower, you do not have enough money, you need {money} to buy this tower, you have {currentMoney}"
+# valid variables are: {money}, {currentMoney}
+notEnoughMoneyToUpgradeTower: "§cYou cannot upgrade this tower, you do not have enough money, you need {money} to upgrade this tower, you have {currentMoney}"
+towerMaxLevel: "§cThis tower is already at its maximum level"
+# valid variables are: {level}, {money}
+leveledUpTower: "§aYou have leveled up this tower to level {level}, costed {money}"
+# valid variables are: {money}
+boughtTower: "§aYou have bought this tower, costed {money}"
+cantSellTower: "§cYou cannot sell this tower, it is not yours"
+# valid variables are: {money}
+soldTower: "§aYou have sold this tower, you have been refunded {money}"
+mustUpgradeTowerBeforeModifying: "§cYou must upgrade this tower before modifying it"
+# valid variables are: {money}, {currentMoney}
+notEnoughMoneyToBuyModifier: "§cYou cannot buy this modifier, you do not have enough money, you need {money} to buy this modifier, you have {currentMoney}"
+# valid variables are: {money}
+boughtModifier: "§aYou have bought this modifier, costed {money}"

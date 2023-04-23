@@ -35,7 +35,7 @@ class GameWaveEntity (val config: GameMobConfig, val relatedGame: Game, strength
   val endPosition get() = relatedGame.gameConfig.endRoom.centerGround
 
   init {
-    entity = relatedGame.world.spawnEntity(spawnPosition.toLocation(relatedGame.world).setDirection(targetPosition.toVector().subtract(spawnPosition.toVector())), config.entityTypeEnum)
+    entity = relatedGame.world.spawnEntity((spawnPosition + Position.randomize(1.0) * Position(1.0, 0.0, 1.0)).toLocation(relatedGame.world).setDirection(targetPosition.toVector().subtract(spawnPosition.toVector())), config.entityTypeEnum)
     if(entity is LivingEntity){
       entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).baseValue = config.health * strengthMultiplier
       entity.health = config.health * strengthMultiplier

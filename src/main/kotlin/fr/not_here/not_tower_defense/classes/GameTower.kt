@@ -3,6 +3,7 @@ package fr.not_here.not_tower_defense.classes
 import fr.not_here.not_tower_defense.NotTowerDefense
 import fr.not_here.not_tower_defense.config.models.GameTowerConfig
 import fr.not_here.not_tower_defense.enums.TowerType
+import fr.not_here.not_tower_defense.managers.Message
 import org.bukkit.Particle
 import org.bukkit.World
 import org.bukkit.entity.Entity
@@ -116,28 +117,29 @@ class GameTower(
 
   fun sell(player: Player){
     if(owner != player) {
-      player.sendMessage("§cYou can't sell a tower that is not yours")
+      player.sendMessage(Message.cantSellTower())
       return
     }
     relatedGame.addPlayerMoney(player, getSellPrice())
     relatedGame.removeTower(this)
-    player.sendMessage("§aYou sold your tower for ${getSellPrice()} money")
+    player.sendMessage(Message.soldTower("money" to getSellPrice()))
   }
 
   fun selectModifier(modifier: Int, player: Player){
     val mod = config.towerModifiers?.getOrNull(modifier) ?: return
     if(maxLevel > level) {
-      player.sendMessage("§cYou must upgrade your tower to the max level before adding a modifier")
+      player.sendMessage(Message.mustUpgradeTowerBeforeModifying())
       return
     }
     if(relatedGame.getPlayerMoney(player) < mod.levelCosts[0]) {
-      player.sendMessage("§cYou don't have enough money to buy this modifier")
+      player.sendMessage(Message.notEnoughMoneyToBuyModifier("money" to mod.levelCosts[0], "currentMoney" to relatedGame.getPlayerMoney(player)))
       return
     }
     relatedGame.addPlayerMoney(player, -mod.levelCosts[0])
     modifierPath.add(modifier)
     entity.customName = config.displayName
     level = config.startLevel
+    player.sendMessage(Message.boughtModifier("money" to mod.levelCosts[0]))
   }
 
   val levelCosts get() = config.run {
@@ -158,6 +160,7 @@ class GameTower(
 
   init {
     spawnEntity()
+    owner.sendMessage(Message.boughtTower("money" to config.levelCosts[0]))
   }
 
   private fun targetEntity(entities: List<Entity>){
@@ -260,14 +263,14 @@ class GameTower(
 
   fun tryLevelUp(player: Player){
     if(level >= maxLevel) {
-      player.sendMessage("§cThis tower is already max level!")
+      player.sendMessage(Message.towerMaxLevel())
       return
     }
     if(relatedGame.getPlayerMoney(player) < config.levelCosts[level+1]) {
-      player.sendMessage("§cYou need ${config.levelCosts[level+1]}$ to level up this tower!")
+      player.sendMessage(Message.notEnoughMoneyToUpgradeTower("money" to config.levelCosts[level+1].toString(), "currentMoney" to relatedGame.getPlayerMoney(player).toString()))
       return
     }
-    player.sendMessage("§aYou leveled up this tower to level ${level+1}!, costed ${config.levelCosts[level+1]}")
+    player.sendMessage(Message.leveledUpTower("level" to (level+1).toString(), "money" to config.levelCosts[level+1].toString()))
     relatedGame.addPlayerMoney(player, -config.levelCosts[level+1])
     level++
   }

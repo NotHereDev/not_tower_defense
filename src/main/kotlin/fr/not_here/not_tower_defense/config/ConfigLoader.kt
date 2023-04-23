@@ -71,6 +71,7 @@ object ConfigLoader {
         }
 
     fun init() {
+        MessagesConfigContainer.load()
         MobsConfigContainer.load()
         TowersConfigContainer.load()
         PowersConfigContainer.load()
