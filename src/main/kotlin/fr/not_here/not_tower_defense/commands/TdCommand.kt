@@ -104,7 +104,7 @@ class TdCommand : CommandExecutor {
       }
       null -> {
         if(GameManager.isPlayerInGame(sender)){
-          sender.sendMessage(Message.gameStarted())
+          sender.sendMessage(Message.gameAlreadyStarted())
           return false
         }
         sender.openInventory(StartMenuHolder(sender).inventory)
