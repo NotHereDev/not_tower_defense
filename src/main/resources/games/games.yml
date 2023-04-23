@@ -13,7 +13,7 @@ games:
     powers: [lightningPower, stun, heal, boostTowers, tpAllStart]
     #name of the tower that can be used in this game (from towers.yml)
     towerNames: [ray_tower, bomber, mage, supermob, ender]
-    #block type that will be used to build towers, these blocks need to be on game room!
+    #block type that will be used to build towers, these blocks need to be on game room!, for more info, see https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
     towerOnBlockType: GOLD_BLOCK
     #timer between waves, (not a starting timer, for this behavior use waves.[].timeout)
     waveChangeTimeout: 100
