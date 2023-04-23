@@ -1,6 +1,5 @@
 package fr.not_here.not_tower_defense.classes
 
-import fr.not_here.not_tower_defense.NotTowerDefense
 import fr.not_here.not_tower_defense.config.models.GameTowerConfig
 import fr.not_here.not_tower_defense.enums.TowerType
 import fr.not_here.not_tower_defense.managers.Message
@@ -36,7 +35,7 @@ class GameTower(
     if (config.damageUpgradeStack == 1.0 || config.maxDamageUpgradeStack == 1.0) return 1.0
     if(this.entity.ticksLived % 500 == 0){
       val entitiesInGame = relatedGame.getWaveEntities()
-      entityDamageTimes.forEach { (uuid, stack) ->
+      entityDamageTimes.forEach { (uuid, _) ->
         if(entitiesInGame.none { it.entity.uniqueId == uuid }) entityDamageTimes.remove(uuid)
       }
     }
@@ -197,9 +196,10 @@ class GameTower(
         explode(target!!)
       }
       TowerType.SPARK -> {
-        damage(findEntitiesNextEachOther(target!!, entities))
-        for(i in entities.indices){
-          rayCast(entities[i], if(i==0) entity else entities[i-1], i == 0)
+        val targets = findEntitiesNextEachOther(target!!, entities)
+        damage(targets)
+        for(i in targets.indices){
+          rayCast(targets[i], if(i==0) entity else targets[i-1], i == 0)
         }
       }
     }
