@@ -8,6 +8,8 @@ import fr.not_here.not_tower_defense.config.models.GameTowerConfig
 import fr.not_here.not_tower_defense.extensions.with
 import fr.not_here.not_tower_defense.managers.GameManager
 import fr.not_here.not_tower_defense.managers.Message
+import net.md_5.bungee.api.ChatMessageType
+import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.World
@@ -50,7 +52,6 @@ data class Game(
   lateinit var loop: BukkitTask
   private val playerMoney = mutableMapOf<UUID, Int>()
   private val playerUiWaveBossBars = mutableMapOf<UUID, BossBar>()
-  private val playerUiHealthBossBar = mutableMapOf<UUID, BossBar>()
   private var health: Double = gameConfig.health
   private var heroPower: Double = 0.0
   private var heroPowerTimer: Int = 0
@@ -253,31 +254,31 @@ data class Game(
   }
 
   fun stop() {
-    waveEntities.forEach { mob ->
-      if(mob.entity.isValid && !mob.entity.isDead)
-        mob.entity.remove()
-    }
-    waveEntities.clear()
-    spawnedTowers.forEach { tower ->
-      if(tower.entity.isValid && !tower.entity.isDead)
-      tower.entity.remove()
-    }
-    spawnedTowers.clear()
     Bukkit.getScheduler().cancelTask(loop.taskId)
     if(!::loop.isInitialized && !loop.isCancelled) loop.cancel()
-    playerUiWaveBossBars.values.forEach { it.removeAll() }
-    playerUiWaveBossBars.clear()
-    playerUiHealthBossBar.values.forEach { it.removeAll() }
-    playerUiHealthBossBar.clear()
-    GameManager.games.remove(this)
-    players.forEach { player ->
-      player.inventory.clear()
-      if(playerOriginLocation.contains(player.uniqueId)) {
-        player.teleport(playerOriginLocation[player.uniqueId])
-      } else {
-        player.teleport(player.world.spawnLocation)
+    Bukkit.getScheduler().runTaskLater(NotTowerDefense.instance, {
+      waveEntities.forEach { mob ->
+        if(mob.entity.isValid && !mob.entity.isDead)
+          mob.entity.remove()
       }
-    }
+      waveEntities.clear()
+      spawnedTowers.forEach { tower ->
+        if(tower.entity.isValid && !tower.entity.isDead)
+          tower.entity.remove()
+      }
+      spawnedTowers.clear()
+      playerUiWaveBossBars.values.forEach { it.removeAll() }
+      playerUiWaveBossBars.clear()
+      players.forEach { player ->
+        player.inventory.clear()
+        if(playerOriginLocation.contains(player.uniqueId)) {
+          player.teleport(playerOriginLocation[player.uniqueId])
+        } else {
+          player.teleport(player.world.spawnLocation)
+        }
+      }
+      GameManager.games.remove(this)
+    }, 2)
   }
 
   fun playerLeave(player: Player){
@@ -299,31 +300,39 @@ data class Game(
     player.teleport(gameConfig.gameRoomSpawn!!.toLocation(world))
     addPlayerMoney(player, gameConfig.startingMoney)
   }
-  fun getWaveBossBarTitle(player: Player) = GlobalConfigContainer.instance!!.waveBossBarTitle
-    .replace("{money}", getPlayerMoney(player).toString())
-    .replace("{heroPower}", heroPower.roundToInt().toString())
-    .replace("{waveNumber}", "${currentWaveIndex + 1}")
-    .replace("{totalWaveNumber}", "${waves.size}")
-    .replace("{waveProgress}", "${(progress * 10000).roundToInt()/100}")
-    .replace("{mobsLeft}", "${waveEntities.size}")
+  fun getBossBarTitle(player: Player) = GlobalConfigContainer.instance!!.bossBarTitle
+    .with(
+      "money" to getPlayerMoney(player),
+      "heroPower" to heroPower.roundToInt(),
+      "waveNumber" to currentWaveIndex + 1,
+      "totalWaveNumber" to waves.size,
+      "waveProgress" to (progress * 10000).roundToInt()/100,
+      "mobsLeft" to waveEntities.size,
+      "health" to health,
+      "maxHealth" to gameConfig.health
+    )
 
-  fun getHealthBossBarTitle(player: Player) = GlobalConfigContainer.instance!!.healthBossBarTitle
-    .replace("{health}", "$health")
-    .replace("{maxHealth}", "${gameConfig.health}")
+  fun getActionBarText(player: Player) = GlobalConfigContainer.instance!!.actionBarText
+    .with(
+      "money" to getPlayerMoney(player),
+      "heroPower" to heroPower.roundToInt(),
+      "waveNumber" to currentWaveIndex + 1,
+      "totalWaveNumber" to waves.size,
+      "waveProgress" to (progress * 10000).roundToInt()/100,
+      "mobsLeft" to waveEntities.size,
+      "health" to health,
+      "maxHealth" to gameConfig.health
+    )
 
   fun showUi(){
     players.forEach {
       var bb = playerUiWaveBossBars[it.uniqueId]
-      if(bb == null) bb = Bukkit.createBossBar(getWaveBossBarTitle(it), GlobalConfigContainer.instance!!.waveBossBarColorEnum, BarStyle.SOLID).apply { addPlayer(it) }
+      if(bb == null) bb = Bukkit.createBossBar(getBossBarTitle(it), GlobalConfigContainer.instance!!.bossBarColorEnum, BarStyle.SOLID).apply { addPlayer(it) }
       bb!!.progress = max(min(progress, 1.0),0.0)
-      bb.title = getWaveBossBarTitle(it)
+      bb.title = getBossBarTitle(it)
       playerUiWaveBossBars[it.uniqueId] = bb
 
-      bb = playerUiHealthBossBar[it.uniqueId]
-      if(bb == null) bb = Bukkit.createBossBar(getHealthBossBarTitle(it), GlobalConfigContainer.instance!!.healthBossBarColorEnum, BarStyle.SOLID).apply { addPlayer(it) }
-      bb!!.progress = max(min(health / gameConfig.health, 1.0),0.0)
-      bb.title = getHealthBossBarTitle(it)
-      playerUiHealthBossBar[it.uniqueId] = bb
+      it.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent(getActionBarText(it)))
     }
   }
 }

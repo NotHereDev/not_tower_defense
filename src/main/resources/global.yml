@@ -2,17 +2,15 @@
 waveEntityNamePattern: "{mobName} §r§8[§3{health}§f/§3{maxHealth}§8]"
 towerLevelDisplayItems: [COBBLESTONE, STONE, COAL_BLOCK, IRON_BLOCK, GOLD_BLOCK, DIAMOND_BLOCK, EMERALD_BLOCK]
 
-# color of the boss bar displaying wave progress, for valid colors see https://hub.spigotmc.org/javadocs/spigot/org/bukkit/boss/BarColor.html
-waveBossBarColor: GREEN
+# color of the boss bar, for valid colors see https://hub.spigotmc.org/javadocs/spigot/org/bukkit/boss/BarColor.html
+bossBarColor: GREEN
 # title of the boss bar displaying wave progress
-# valid variables are {waveNumber}, {totalWaveNumber}, {waveProgress}, {mobsLeft}, {heroPower} and {money}
-waveBossBarTitle: "§a§lWave {waveNumber}/{totalWaveNumber} §r| §6§lMoney: {money} §r| §5§lHero Power: {heroPower} §r| §b§lProgress: §a{waveProgress}% | §4§lMobs left: {mobsLeft}"
+# valid variables are {waveNumber}, {totalWaveNumber}, {waveProgress}, {mobsLeft}, {heroPower}, {money}, {health} and {maxHealth}
+bossBarTitle: "§a§lWave {waveNumber}/{totalWaveNumber} §r| §6§lMoney: {money} §r| §5§lHero Power: {heroPower} §r| §b§lProgress: §a{waveProgress}% | §4§lMobs left: {mobsLeft}"
 
-# color of the boss bar displaying game health, for valid colors see https://hub.spigotmc.org/javadocs/spigot/org/bukkit/boss/BarColor.html
-healthBossBarColor: RED
-# title of the boss bar displaying game health
-# valid variables are {health} and {maxHealth}
-healthBossBarTitle: "§c§lHealth: §4{health}§f/§4{maxHealth}"
+# action bar text
+# valid variables are {waveNumber}, {totalWaveNumber}, {waveProgress}, {mobsLeft}, {heroPower}, {money}, {health} and {maxHealth}
+actionBarText: "§c§lHealth: §4{health}§f/§4{maxHealth}"
 
 # this text will be displayed on top lore of menu items used to buy towers, and on power item to display hero power cost
 # valid variables are {cost}

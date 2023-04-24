@@ -9,11 +9,10 @@ data class GlobalConfigContainer(
   var waveEntityNamePattern: String = "{mobName} §r§8[§3{health}§f/§3{maxHealth}§8]",
   var towerLevelDisplayItems: List<String> = listOf(Material.COBBLESTONE.name, Material.STONE.name, Material.COAL_BLOCK.name, Material.IRON_BLOCK.name, Material.GOLD_BLOCK.name, Material.DIAMOND_BLOCK.name, Material.EMERALD_BLOCK.name),
 
-  var waveBossBarColor: String = BarColor.BLUE.name,
-  var waveBossBarTitle: String = "§a§lWave {waveNumber}/{totalWaveNumber} §r| §6§lMoney: {money} §r| §b§lProgress: §a{waveProgress}% | §4§lMobs left: {mobsLeft}",
+  var bossBarColor: String = BarColor.BLUE.name,
+  var bossBarTitle: String = "§a§lWave {waveNumber}/{totalWaveNumber} §r| §6§lMoney: {money} §r| §b§lProgress: §a{waveProgress}% | §4§lMobs left: {mobsLeft}",
 
-  var healthBossBarColor: String = BarColor.RED.name,
-  var healthBossBarTitle: String = "§c§lHealth: §4{health}§c/§4{maxHealth}",
+  var actionBarText: String = "§c§lHealth: §4{health}§c/§4{maxHealth}",
 
   var costPattern: String = "§6§lCost: §e{cost}",
   var levelPattern: String = "§6§lLevel: §e{level}",
@@ -39,11 +38,8 @@ data class GlobalConfigContainer(
   var sellDisplayItem: String = Material.GOLD_INGOT.name,
 ) {
 
-  val waveBossBarColorEnum: BarColor
-    get() = BarColor.valueOf(waveBossBarColor)
-
-  val healthBossBarColorEnum: BarColor
-    get() = BarColor.valueOf(healthBossBarColor)
+  val bossBarColorEnum: BarColor
+    get() = BarColor.valueOf(bossBarColor)
 
   val aimClosestDisplayEnum: Material
     get() = Material.getMaterial(aimClosestDisplayItem)!!
@@ -60,11 +56,8 @@ data class GlobalConfigContainer(
         NotTowerDefense.instance.logger.severe("§4Invalid material name $towerLevelDisplayItem in global config towerLevelDisplayItems, valid values are: ${Material.values().map { it.name }}")
       }
     }
-    if(waveBossBarColor !in BarColor.values().map { it.name }) {
-      NotTowerDefense.instance.logger.severe("§4Invalid bar color name $waveBossBarColor in global config waveBossBarColor, valid values are: ${BarColor.values().map { it.name }}")
-    }
-    if(healthBossBarColor !in BarColor.values().map { it.name }) {
-      NotTowerDefense.instance.logger.severe("§4Invalid bar color name $healthBossBarColor in global config healthBossBarColor, valid values are: ${BarColor.values().map { it.name }}")
+    if(bossBarColor !in BarColor.values().map { it.name }) {
+      NotTowerDefense.instance.logger.severe("§4Invalid bar color name $bossBarColor in global config bossBarColor, valid values are: ${BarColor.values().map { it.name }}")
     }
     val gameNames = GamesConfigContainer.instance!!.games!!.map { it.name }
     for((_, game) in worldGameConfig) {
